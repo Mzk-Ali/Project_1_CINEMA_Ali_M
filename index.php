@@ -15,5 +15,11 @@ if(isset($_GET["action"])){
     switch ($_GET["action"]) {
         case "listFilms" : $ctrlCinema->listFilms(); break;
         case "listActeurs" : $ctrlCinema->listActeurs(); break;
+        case "home_view" : $ctrlCinema->viewHome(); break;
+        case "film_view" : $ctrlCinema->viewFilm(); break;
+        case "film_fiche_view" : $ctrlCinema->viewFicheFilm($_GET["id"]); break;
+        case "modif_film" : $ctrlCinema->viewModifFilm($_GET["id"]); break;
+        case "personne_fiche_view" : $ctrlCinema->viewFichePersonne($_GET["id"]); break;
+        case "modifFilm" : $ctrlCinema->ModifFilm($_GET["id"]); break;
     }
 }
