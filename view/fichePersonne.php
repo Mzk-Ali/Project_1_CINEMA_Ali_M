@@ -17,7 +17,11 @@ $requete = $requete_fichePersonne->fetch();
         <span>Dernière Réalisation : </span>
     </div>
     <div class="icon_chiffre">
-        <div class="logo"><i class="ri-edit-box-line"></i></div>
+        <a href="index.php?action=modif_Personne&id=<?=$requete["id"]?>">
+            <div class="logo">
+                <i class="ri-edit-box-line"></i>
+            </div>
+        </a>
         <div class="chiffre">
             <div class="chiffre_film">
                 <span>Film réalisé</span>

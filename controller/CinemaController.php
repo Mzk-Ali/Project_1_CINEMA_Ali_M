@@ -14,6 +14,14 @@ class CinemaController {
         return $requete_recovery;
     }
 
+    // Execution et modification par requête
+    public function exec_modif($requete){
+        // Connexion à la base de données voulu
+        $pdo = Connect::seConnecter();
+        // Execute la requête voulu
+        $pdo->query("$requete");
+    }
+
 
     // Liste Film
     public function listFilms() {
@@ -64,9 +72,9 @@ class CinemaController {
     }
 
     // Fiche Film
-    public function ficheFilm($id){
+    public function ficheFilm($id){ //DATE_FORMAT(SEC_TO_TIME(duree*60), '%H:%i') AS duree
         $requete = "
-            SELECT titre, affiche_film, note, synopsis, date_sortie, DATE_FORMAT(SEC_TO_TIME(duree*60), '%H:%i') AS duree, CONCAT(nom, ' ',prenom) AS personne, film.id_film AS id
+            SELECT titre, affiche_film, note, synopsis, date_sortie, duree, CONCAT(nom, ' ',prenom) AS personne, film.id_film AS id
             FROM film
             INNER JOIN realisateur
             ON film.id_realisateur = realisateur.id_realisateur
@@ -122,6 +130,94 @@ class CinemaController {
 
 
 
+
+
+    public function modifFilm_requete($id){
+        if(isset($_POST['submit']))
+        {
+            $id_realisateur = filter_input(INPUT_POST, "personne", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $titre          = filter_input(INPUT_POST, "titre", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $date_sortie    = filter_input(INPUT_POST, "date_sortie", FILTER_DEFAULT);
+            $duree          = filter_input(INPUT_POST, "duree", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $synopsis       = filter_input(INPUT_POST, "synopsis", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $affiche_film   = filter_input(INPUT_POST, "affiche_film", FILTER_SANITIZE_URL);
+            
+            if(filter_var($id_realisateur, FILTER_VALIDATE_INT)){
+                $requeteRealisateur = "
+                            UPDATE film, realisateur
+                            SET film.id_realisateur = realisateur.id_realisateur
+                            WHERE realisateur.id_personne = $id_realisateur
+                            AND film.id_film = $id
+                            ";
+                
+                $this->exec_modif($requeteRealisateur);
+            }
+            
+            if(filter_var($duree, FILTER_VALIDATE_INT)){
+                $requete = "
+                            UPDATE film
+                            SET titre = '$titre', 
+                            date_sortie = '$date_sortie',
+                            duree = '$duree',
+                            synopsis = '$synopsis',
+                            affiche_film = '$affiche_film'
+                            WHERE film.id_film = $id
+                            ";
+
+                $this->exec_modif($requete);
+            }
+
+            $this->viewFicheFilm($id);
+        }
+
+        if(isset($_POST['delete'])){
+            $requete_delete = "
+                                DELETE FROM 'film'
+                                WHERE film.id_film = $id
+                                ";
+
+            $this->exec_modif($requete_delete);
+            $this->viewHome();
+        }
+    }
+
+    public function modifPersonne_requete($id){
+        if(isset($_POST['submit']))
+        {
+            $nom            = filter_input(INPUT_POST, "nom", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $prenom         = filter_input(INPUT_POST, "prenom", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $sexe           = filter_input(INPUT_POST, "sexe", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $date_naissance = filter_input(INPUT_POST, "date_naissance", FILTER_DEFAULT);
+            $profil         = filter_input(INPUT_POST, "profil", FILTER_SANITIZE_URL);
+            
+            $requete = "
+                        UPDATE personne
+                        SET nom = '$nom', 
+                        prenom = '$prenom',
+                        sexe = '$sexe',
+                        date_naissance = '$date_naissance',
+                        profil = '$profil'
+                        WHERE personne.id_personne = $id
+                        ";
+            $this->exec_modif($requete);
+
+            $this->viewFichePersonne($id);
+        }
+
+        // if(isset($_POST['delete'])){
+        //     $requete_delete = "
+        //                         DELETE FROM 'film'
+        //                         WHERE film.id_film = $id
+        //                         ";
+
+        //     $this->exec_modif($requete_delete);
+        //     $this->viewHome();
+        // }
+    }
+
+
+
+
     public function viewHome() {
         $pdo = Connect::seConnecter();
 
@@ -157,8 +253,10 @@ class CinemaController {
     }
 
     public function ModifFilm($id){
-        // $this->modifFilm_requete($id);
-        // require "view/viewHome.php";
-        $this->viewFicheFilm($id);
+        $this->modifFilm_requete($id);
+    }
+
+    public function ModifPersonne($id){
+        $this->modifPersonne_requete($id);
     }
 }

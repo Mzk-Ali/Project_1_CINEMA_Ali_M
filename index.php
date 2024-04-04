@@ -19,7 +19,9 @@ if(isset($_GET["action"])){
         case "film_view" : $ctrlCinema->viewFilm(); break;
         case "film_fiche_view" : $ctrlCinema->viewFicheFilm($_GET["id"]); break;
         case "modif_film" : $ctrlCinema->viewModifFilm($_GET["id"]); break;
+        case "modif_Personne" : $ctrlCinema->viewModifPersonne($_GET["id"]); break;
         case "personne_fiche_view" : $ctrlCinema->viewFichePersonne($_GET["id"]); break;
         case "modifFilm" : $ctrlCinema->ModifFilm($_GET["id"]); break;
+        case "modifPersonne" : $ctrlCinema->ModifPersonne($_GET["id"]); break;
     }
 }

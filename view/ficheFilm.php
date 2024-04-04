@@ -9,7 +9,7 @@ $requete = $requete_ficheFilm->fetch();
 <section class="section_info_film">
     <div class="film_img_note">
         <div class="affiche_film">
-            <img src="<?php echo $requete["affiche_film"];?>" alt="">
+            <img src="<?php echo $requete["affiche_film"];?>" alt="Affiche du film">
         </div>
         <div class="note_film">
             <span>NOTE : <?php echo $requete["note"];?></span>
@@ -19,13 +19,13 @@ $requete = $requete_ficheFilm->fetch();
         <div class="info_logo">
             <div class="caracteristique">
                 <span>Réalisé par : <?php echo $requete["personne"];?></span>
-                <span>Sortie le : <?php echo $requete["date_sortie"]."  |   Durée : ".$requete["duree"]."   |   " ?></span>
+                <span>Sortie le : <?php echo $requete["date_sortie"]."  |   Durée : ".$requete["duree"]." minutes   |   " ?></span>
             </div>
+            <a href="index.php?action=modif_film&id=<?=$requete["id"]?>">
             <div class="logo">
-                <a href="index.php?action=modif_film&id=<?=$requete["id"]?>">
                     <i class="ri-edit-box-line"></i>
-                </a>
-            </div>
+                </div>
+            </a>
         </div>
         <div class="film_synopsis">
             <span class="title_synopsis">Synopsis du FILM :</span>

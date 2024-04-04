@@ -5,7 +5,7 @@ $requete = $requete_ficheFilm->fetch();?>
 
 
 <section class="formulaire_modification">
-    <h1>Modification</h1>
+    <h1>Modification du film : <br><?=$requete["titre"]?></h1>
 
     <form action="index.php?action=modifFilm&id=<?=$requete["id"]?>" method="post">
         <div class="container_formFilm">
@@ -17,7 +17,7 @@ $requete = $requete_ficheFilm->fetch();?>
                         <option value="<?=$requete["personne"]?>" selected hidden><?=$requete["personne"]?></option>
                     <?php
                         foreach($requete_listRealisateurs->fetchAll() as $keys) { ?>
-                            <option value="<?=$keys["personne"]?>"><?=$keys["personne"]?></option>
+                            <option value="<?=$keys["id"]?>"><?=$keys["personne"]?></option>
                         <?php }?>
                     </select>
                 </div>
@@ -40,7 +40,7 @@ $requete = $requete_ficheFilm->fetch();?>
             <div class="dureeFilm">
                 <label for="duree">Durée (en minutes)</label>
                 <div class="input_form_duree">
-                    <input name="duree" id="duree" type="time" value="<?=$requete["duree"]?>">
+                    <input name="duree" id="duree" type="number" value="<?=$requete["duree"]?>">
                 </div>
             </div>
 
