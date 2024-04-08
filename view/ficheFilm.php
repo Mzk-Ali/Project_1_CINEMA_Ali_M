@@ -2,8 +2,7 @@
 session_start();
 ob_start(); 
 include "function.php";
-$requete = $requete_ficheFilm->fetch();
-// var_dump($requete);?>
+$requete = $requete_ficheFilm->fetch();?>
 
 
 <section class="section_info_film">
@@ -19,10 +18,13 @@ $requete = $requete_ficheFilm->fetch();
         <div class="info_logo">
             <div class="caracteristique">
                 <span>Réalisé par : <?php echo $requete["personne"];?></span>
-                <span>Sortie le : <?php echo $requete["date_sortie"]."  |   Durée : ".$requete["duree"]." minutes   |   " ?></span>
+                <span>Sortie le : <?php echo $requete["date_sortie"]."  |   Durée : ".$requete["duree"]." minutes   |   ";
+                                        foreach($requete_genre_film->fetchAll() as $keys){ 
+                                            echo $keys["genre"]." ";
+                                        }?></span>
             </div>
             <a href="index.php?action=modif_film&id=<?=$requete["id"]?>">
-            <div class="logo">
+                <div class="logo">
                     <i class="ri-edit-box-line"></i>
                 </div>
             </a>
@@ -39,7 +41,7 @@ $requete = $requete_ficheFilm->fetch();
 </section>
 
 <?php
-    list_defilement("listActeurs", "personne_fiche_view", "Listes des Acteurs du film", $requete_listActeursThisFilm);
+    list_defilement("listActeurs", "personne_fiche_view", "Listes des Acteurs du film", $requete_listActeursThisFilm, "defaut");
 ?>
 
 <?php

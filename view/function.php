@@ -1,10 +1,29 @@
 <?php
 
 
-function list_defilement($type, $action, $titre_list, $requete_list){
+function list_defilement($type, $action, $titre_list, $requete_list, $requete_listGenre){
     ?>
     <section class="list_defilement">
         <h2><?= $titre_list ?></h2>
+
+        <?php
+        if($type == "listFilmsGenre"){?>
+            <div class="container_button_genre">
+                <?php 
+                foreach($requete_listGenre->fetchAll() as $keys)
+                {?>
+                <a href="index.php?action=film_view&genre=<?=$keys["genre"]?>">
+                    <div class="button_genre"><?=$keys["genre"]?></div>
+                </a>
+                <?php
+                }
+                ?>
+            </div>
+        <?php
+        }
+        ?>
+
+
         <div class="container_titre_list">
             <div class="left_button list_button">
                 <i class="ri-arrow-left-s-line"></i>
@@ -15,11 +34,26 @@ function list_defilement($type, $action, $titre_list, $requete_list){
                     <a href="index.php?action=<?=$action?>&id=<?=$keys["id"]?>">
                         <div class="container_card">
                             <div class="img_card">
-                                <img src="https://fr.web.img5.acsta.net/c_310_420/medias/nmedia/18/65/88/40/18895516.jpg" alt="affiche film">
+                                <img src="
+                                    <?php 
+                                        if($type == "listFilms" || $type == "listFilmsGenre")
+                                        {
+                                            echo $keys["affiche_film"];
+                                        }
+                                        elseif($type == "listActeurs")
+                                        {
+                                            echo $keys["profil"];
+                                        }
+                                        elseif($type == "listRealisateurs")
+                                        {
+                                            echo $keys["profil"];
+                                        }
+                                     ?>
+                                " alt="affiche film">
                             </div>
                             <div class="info_card">
                                 <p><?php 
-                                    if($type == "listFilms")
+                                    if($type == "listFilms" || $type == "listFilmsGenre")
                                     {
                                         echo $keys["titre"];
                                     }
@@ -45,4 +79,3 @@ function list_defilement($type, $action, $titre_list, $requete_list){
 
 <?php
 }
-

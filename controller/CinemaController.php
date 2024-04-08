@@ -5,6 +5,8 @@ use Model\Connect;
 
 class CinemaController {
 
+/* ----------------------------------------  --------------------------------------------------- */
+
     // Execution et recuperation donnée par requête
     public function exec_recovery($requete){
         // Connexion à la base de données voulu
@@ -21,44 +23,83 @@ class CinemaController {
         // Execute la requête voulu
         $pdo->query("$requete");
     }
+/* --------------------------------------------------------------------------------------------- */
 
 
+/* ----------------------------------------  --------------------------------------------------- */
     // Liste Film
-    public function listFilms() {
+    public function listFilms($filtre, $genre) {
         $requete = "
-            SELECT titre, date_sortie, film.id_film AS id
+            SELECT titre, date_sortie, affiche_film, film.id_film AS id
             FROM film
             ";
+        if($genre != "defaut")
+        {
+            $requete .= '
+                INNER JOIN gestion_genre
+                ON film.id_film = gestion_genre.id_film
+                INNER JOIN genre
+                ON gestion_genre.id_genre = genre.id_genre
+                WHERE genre.genre = "'.$genre.'"';
+        }
+        if($filtre != "defaut")
+        {
+            $requete .= "ORDER BY ".$filtre." DESC";
+        }
         $requete_recovery = $this->exec_recovery($requete);
         return $requete_recovery;
     }
 
     // Liste Realisateur
-    public function listRealisateurs() {
-        $requete = "
-            SELECT CONCAT(nom, ' ',prenom) AS personne, realisateur.id_personne AS id
-            FROM realisateur, personne
-            WHERE realisateur.id_personne = personne.id_personne
+    public function listRealisateurs($filtre) {
+        $requete = "SELECT ";
+        if($filtre != "defaut"){
+            $requete .= "$filtre AS filtre, ";
+        }
+         
+        $requete .= "CONCAT(nom, ' ',prenom) AS personne, realisateur.id_personne AS id, profil
+            FROM film
+            INNER JOIN realisateur
+            ON film.id_realisateur = realisateur.id_realisateur
+            INNER JOIN personne
+            ON realisateur.id_personne = personne.id_personne
+            GROUP BY film.id_realisateur
             ";
+        if($filtre != "defaut")
+        {
+            $requete .= "ORDER BY ".$filtre." DESC";
+        }
         $requete_recovery = $this->exec_recovery($requete);
         return $requete_recovery;
     }
 
     // Liste Acteur
     public function listActeurs() {
-        $pdo = Connect::seConnecter();
-        $requete = $pdo->query("
-            SELECT CONCAT(nom, ' ',prenom) AS personne, acteur.id_personne AS id
+        $requete = "
+            SELECT CONCAT(nom, ' ',prenom) AS personne, acteur.id_personne AS id, profil
             FROM acteur, personne
             WHERE acteur.id_personne = personne.id_personne
-            ");
-        return $requete;
+            ";
+        $requete_recovery = $this->exec_recovery($requete);
+        return $requete_recovery;
     }
 
-    // Liste Acteur
+
+    // Liste de tous les genres de film
+    public function listGenre(){
+        $requete = "
+            SELECT *
+            FROM genre
+            ";
+        $requete_recovery = $this->exec_recovery($requete);
+        return $requete_recovery;
+    }
+
+
+    // Liste Acteur selon l'id d'un film
     public function listActeursAndRoleperFilm($id) {
         $requete = "
-            SELECT CONCAT(nom, ' ',prenom) AS personne, nom_personnage, acteur.id_personne AS id
+            SELECT CONCAT(nom, ' ',prenom) AS personne, nom_personnage, acteur.id_personne AS id, profil
             FROM contrat
             INNER JOIN acteur
             ON contrat.id_acteur = acteur.id_acteur
@@ -86,12 +127,23 @@ class CinemaController {
         return $requete_recovery;
     }
 
+    // Genre Film
+    public function genreFilm($id){
+        $requete = "
+            SELECT genre.genre
+            FROM gestion_genre, genre
+            WHERE gestion_genre.id_genre = genre.id_genre
+            AND gestion_genre.id_film = $id";
+        $requete_recovery = $this->exec_recovery($requete);
+        return $requete_recovery;
+    }
+
 
 
     // Fiche Personne
     public function fichePersonne($id) {
         $requete = "
-            SELECT CONCAT(nom, ' ',prenom) AS personne, date_naissance, profil
+            SELECT CONCAT(nom, ' ',prenom) AS personne, sexe,  date_naissance, profil, personne.id_personne AS id
             FROM personne
             WHERE personne.id_personne = $id";
         $requete_recovery = $this->exec_recovery($requete);
@@ -215,42 +267,159 @@ class CinemaController {
         // }
     }
 
+    public function addPersonne(){
+        if(isset($_POST['submit']))
+        {
+            $nom            = filter_input(INPUT_POST, "nom", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $prenom         = filter_input(INPUT_POST, "prenom", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $sexe           = filter_input(INPUT_POST, "sexe", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $date_naissance = filter_input(INPUT_POST, "date_naissance", FILTER_DEFAULT);
+            $profil         = filter_input(INPUT_POST, "profil", FILTER_SANITIZE_URL);
+
+            $requete = "
+                INSERT INTO personne (nom, prenom, sexe, date_naissance, profil)
+                VALUES ('$nom', '$prenom', '$sexe', '$date_naissance', '$profil')
+                ";
+            $this->exec_modif($requete);
+
+            $this->viewAdd();
+        }
+    }
+
+    public function addFilm(){
+        if(isset($_POST['submit']))
+        {
+            $id_realisateur = filter_input(INPUT_POST, "personne", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $titre          = filter_input(INPUT_POST, "titre", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $date_sortie    = filter_input(INPUT_POST, "date_sortie", FILTER_DEFAULT);
+            $duree          = filter_input(INPUT_POST, "duree", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $synopsis       = filter_input(INPUT_POST, "synopsis", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $affiche_film   = filter_input(INPUT_POST, "affiche_film", FILTER_SANITIZE_URL);
+            
+            
+            if(filter_var($duree, FILTER_VALIDATE_INT)){
+                $requete = "
+                        INSERT INTO film (titre, date_sortie, duree, synopsis, affiche_film)
+                        VALUES ($titre', '$date_sortie', '$duree', '$synopsis', '$affiche_film')
+                        ";
+
+                $this->exec_modif($requete);
+                $this->viewAdd();
+            }
+
+            
+        }
+    }
+/* --------------------------------------------------------------------------------------------- */
 
 
 
+/* ----------------------------------------  --------------------------------------------------- */
+
+    // Fonction qui retourne toutes les réponses de requête utiles pour la vue HOME
     public function viewHome() {
-        $pdo = Connect::seConnecter();
-
-        $requete_listFilms = $this->listFilms();
-        $requete_listRealisateurs = $this->listRealisateurs();
+        // Liste des films 
+        $requete_listFilms                  = $this->listFilms("defaut", "defaut");
+        // Liste des Réalisateurs
+        $requete_listRealisateurs           = $this->listRealisateurs("defaut");
+        // Liste des Acteurs
+        $requete_listActeurs                = $this->listActeurs();
         require "view/viewHome.php";
     }
 
-    public function viewFilm() {
-        $pdo = Connect::seConnecter();
 
-        $requete_listFilms = $this->listFilms();
+    // Fonction qui retourne toutes les réponses de requête utiles pour la vue FILM
+    public function viewFilm($genre) {
+        // Liste des films selon la base de données SQL
+        $requete_listFilms                  = $this->listFilms("defaut", "defaut");
+        // Liste des films selon la note
+        $requete_listFilmsPerNote           = $this->listFilms("note", "defaut");
+        // Liste des films selon la date de sortie
+        $requete_listFilmsPerDateSortie     = $this->listFilms("date_sortie", "defaut");
+        // Liste des films selon la durée
+        $requete_listFilmsPerDuree          = $this->listFilms("duree", "defaut");
+        // Liste des films selon la durée
+        $requete_listFilmsPerGenre          = $this->listFilms("duree", $genre);
+        // Liste de tous les genres de film
+        $requete_listGenre                  = $this->listGenre();
         require "view/viewFilm.php";
     }
 
+
+    // Fonction qui retourne toutes les réponses de requête utiles pour la vue REALISATEUR
+    public function viewRealisateur() {
+        // Liste des réalisateurs selon la base de données SQL
+        $requete_listRealisateurs           = $this->listRealisateurs("defaut");
+        // Liste des réalisateurs selon le nombre de film
+        $requete_listRealisateursPerNbr     = $this->listRealisateurs("COUNT(id_film)");
+        // Liste des réalisateurs selon la note
+        $requete_listRealisateursPerNote    = $this->listRealisateurs("AVG(note)");
+        require "view/viewRealisateur.php";
+    }
+
+    // Fonction qui retourne toutes les réponses de requête utiles pour la vue ACTEUR
+    public function viewActeur(){
+        // Liste des Acteurs
+        $requete_listActeurs                = $this->listActeurs();
+        require "view/viewActeur.php";
+    }
+
+    public function viewAdd(){
+        require "view/viewAdd.php";
+    }
+
+    public function viewAddPersonne(){
+        require "view/viewAddPersonne.php";
+    }
+
+    public function viewAddFilm(){
+        // Liste des realisateurs contenu dans la base de données pour le choix du réalisateur lors de la modification
+        $requete_listRealisateurs           = $this->listRealisateurs("defaut");
+        require "view/viewAddFilm.php";
+    }
+
+
+    // Fonction qui retourne toutes les réponses de requête utiles pour l'affichage de la Fiche d'un Film
     public function viewFicheFilm($id) {
+        // Ensemble des informations du film
         $requete_ficheFilm = $this->ficheFilm($id);
+        // Liste des genres selon l'id du film
+        $requete_genre_film = $this->genreFilm($id);
+        // Liste des Acteurs et leur role dans le film selon l'id du film
         $requete_listActeursThisFilm = $this->listActeursAndRoleperFilm($id);
         require "view/ficheFilm.php";
     }
 
+
+    // Fonction qui retourne toutes les réponses de requête utiles pour l'affichage de la Fiche d'une Personne
     public function viewFichePersonne($id) {
+        // Ensemble des informations d'une Personne selon son id
         $requete_fichePersonne = $this->fichePersonne($id);
+        // Liste des films réalisés par un réalisateur selon son id
         $requete_listFilmsPerRealisateur = $this->listFilmsPerRealisateur($id);
+        // Liste des films dont un acteur est présent selon son id
         $requete_listFilmsPerActeur = $this->listFilmsPerActeur($id);
         require "view/fichePersonne.php";
     }
+    
 
+    // Fonction qui retourne toutes les réponses de requête utiles pour l'affichage de la Modification d'un film
     public function viewModifFilm($id){
-        $requete_listRealisateurs = $this->listRealisateurs();
+        // Liste des realisateurs contenu dans la base de données pour le choix du réalisateur lors de la modification
+        $requete_listRealisateurs = $this->listRealisateurs("defaut");
+        // Ensemble des données d'un film selon l'id
         $requete_ficheFilm = $this->ficheFilm($id);
         require "view/filmModif.php";
     }
+
+
+    // Fonction qui retourne toutes les réponses de requête utiles pour l'affichage de la Modification d'une Personne
+    public function viewModifPersonne($id){
+        // Ensemble des informations d'une Personne selon son id
+        $requete_fichePersonne = $this->fichePersonne($id);
+        require "view/personneModif.php";
+    }
+
 
     public function ModifFilm($id){
         $this->modifFilm_requete($id);

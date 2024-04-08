@@ -18,18 +18,18 @@
             <div class="nav_menu">
                 <ul class="nav_menu_list">
                     <li class="nav_item">
-                        <a href="index.php?action=film_view">FILM</a>
+                        <a href="index.php?action=film_view&genre=Action">FILM</a>
                     </li>
                     <li class="nav_item">
-                        <a href="#">REALISATEUR</a>
+                        <a href="index.php?action=realisateur_view">REALISATEUR</a>
                     </li>
                     <li class="nav_item">
-                        <a href="#">ACTEUR</a>
+                        <a href="index.php?action=acteur_view">ACTEUR</a>
                     </li>
                 </ul>
             </div>
             <div class="nav_add">
-                <a href="#">
+                <a href="index.php?action=add_view">
                     <i class="ri-user-settings-fill"></i>
                 </a>
             </div>

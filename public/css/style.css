@@ -11,6 +11,11 @@
     --title-color : rgb(255, 199, 0);
 }
 
+button{
+    border: none;
+    background-color: white;
+}
+
 body{
     position: relative;
 }
@@ -85,6 +90,7 @@ main{
 
 h2{
     color: var(--title-color);
+    margin-bottom: 10px;
 }
 
 h1{
@@ -96,33 +102,62 @@ h1{
 
 
 /* List defilement */
+
+.list_defilement{
+    margin: 5vh 8vw;
+}
 .container_titre_list{
     display: flex;
-    justify-content: center;
+    justify-content:space-between;
     align-items: center;
     border-radius: 20px;
     background-color: rgba(217, 217, 217, 0.4);
+    height: 300px;
+}
 
+.container_button_genre{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 30px;
+}
+
+.button_genre{
+    background-color: rgba(255, 226, 124, 0.56);
+    border-radius: 20px;
+    padding: 10px;
+    font-size: medium;
+    font-style: italic;
+    cursor: pointer;
+}
+
+.button_genre:hover{
+    font-style: normal;
+    background-color: rgba(153, 55, 0, 0.4);
 }
 
 .container_list{
     display: flex;
     justify-content: center;
-    align-items: flex-start;
+    align-items: center;
     /* align-items: center; */
     /* display: grid;
     grid-auto-flow: column;
     grid-auto-columns: 25%; */
     gap: 3%;
-    padding: 1% 0;
+    /* padding: 1% 0; */
     overflow-x: scroll;
     overscroll-behavior-inline: contain;
-    height: 20vh;
-    width: 50vw;
+    height: 100%;
+    width: 70%;
 }
 
 .container_list::-webkit-scrollbar{
     /* display: none; */
+}
+
+.container_list a{
+    height: 80%;
 }
 
 .container_card{
@@ -136,7 +171,7 @@ flex: 0 0 auto;
 }
 
 .container_card:hover{
-    transform: translateY(-10px) scale(1.2);
+    transform: translateY(-10px) scale(1.1);
 }
 
 .img_card{
@@ -156,10 +191,11 @@ flex: 0 0 auto;
     width: 100%;
     height: 100%;
     color: rgba(255, 199, 0, 1);
+    font-size: 80%;
     text-align: center;
-    white-space: nowrap;
+    /* white-space: nowrap; */
     overflow: hidden;
-    text-overflow: ellipsis;
+    /* text-overflow: ellipsis; */
     padding: 3% 10%;
 
 
@@ -288,17 +324,19 @@ flex: 0 0 auto;
 
 .personne_profil{
     width: 20vw;
+    overflow: hidden;
 }
 
 .personne_profil img{
     width: 100%;
+    border: solid 4px;
+    border-radius: 80px;
+    border-color: var(--navbar_color);
     transition: 1s;
 }
 
 .personne_profil img:hover{
-    border: solid 2px;
-    border-color: var(--navbar_color);
-    transform: translateY(-10px);
+    border-radius: 0px;
 }
 
 .personne_info{
@@ -331,7 +369,7 @@ flex: 0 0 auto;
 }
 
 .icon_chiffre .logo{
-    padding: 5%;
+    padding: 10px;
     transition: 1s;
 }
 
@@ -446,8 +484,42 @@ textarea{
 
 
 
-/* -------- Film Modif ------------- */
+/* ---------- ADD View ------------- */
+.add{
+    background-image: linear-gradient(to right bottom, rgba(255, 226, 124, 0.4), rgba(153, 136, 75, 0.6));
+    border-radius: 30px;
+    margin: auto;
+    width: 50vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+    padding: 50px;
+}
 
+.container_add{
+    background-color: rgba(153, 119, 0, 1);
+    border-radius: 30px;
+    width: 30vw;
+    /* height: 40px; */
+    text-align: center;
+    padding: 20px;
+    transition: 1s;
+    /* margin: 20px; */
+}
+
+.container_add:hover{
+    background-color: rgb(211, 174, 41);
+    transform: scale(1.1);
+}
+
+.formulaire_add_button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding:  3vh 10vw;
+}
 
 /* --------------------------------- */
 

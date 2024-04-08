@@ -8,7 +8,7 @@ $requete = $requete_fichePersonne->fetch();
 
 <section class="section_info_personne">
     <div class="personne_profil">
-        <img src="<?php echo $requete["profil"];?>" alt="">
+        <img src="<?= $requete["profil"];?>" alt="">
     </div>
     <div class="personne_info">
         <span>Métier :</span>
@@ -17,7 +17,7 @@ $requete = $requete_fichePersonne->fetch();
         <span>Dernière Réalisation : </span>
     </div>
     <div class="icon_chiffre">
-        <a href="index.php?action=modif_Personne&id=<?=$requete["id"]?>">
+        <a href="index.php?action=modif_personne&id=<?=$requete["id"]?>">
             <div class="logo">
                 <i class="ri-edit-box-line"></i>
             </div>
@@ -35,8 +35,8 @@ $requete = $requete_fichePersonne->fetch();
 </section>
 
 <?php
-    list_defilement("listFilms", "film_fiche_view", "Filmographie", $requete_listFilmsPerRealisateur);
-    list_defilement("listFilms", "film_fiche_view", "Filmographie", $requete_listFilmsPerActeur);
+    list_defilement("listFilms", "film_fiche_view", "Films réalisés", $requete_listFilmsPerRealisateur, "defaut");
+    list_defilement("listFilms", "film_fiche_view", "Filmographie/Role", $requete_listFilmsPerActeur, "defaut");
 ?>
 
 <?php
