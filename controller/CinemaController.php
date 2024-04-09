@@ -50,6 +50,16 @@ class CinemaController {
         return $requete_recovery;
     }
 
+    // Liste Personne
+    public function listPersonne(){
+        $requete = "
+                SELECT CONCAT(nom, ' ',prenom) AS personne, personne.id_personne
+                FROM personne
+                ";
+        $requete_recovery = $this->exec_recovery($requete);
+        return $requete_recovery;
+    }
+
     // Liste Realisateur
     public function listRealisateurs($filtre) {
         $requete = "SELECT ";
@@ -57,7 +67,7 @@ class CinemaController {
             $requete .= "$filtre AS filtre, ";
         }
          
-        $requete .= "CONCAT(nom, ' ',prenom) AS personne, realisateur.id_personne AS id, profil
+        $requete .= "CONCAT(nom, ' ',prenom) AS personne, realisateur.id_personne AS id, realisateur.id_realisateur AS id_realisateur, profil
             FROM film
             INNER JOIN realisateur
             ON film.id_realisateur = realisateur.id_realisateur
@@ -286,26 +296,56 @@ class CinemaController {
         }
     }
 
+
+
+
+
+
+
+
     public function addFilm(){
         if(isset($_POST['submit']))
         {
-            $id_realisateur = filter_input(INPUT_POST, "personne", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $id_personne    = filter_input(INPUT_POST, "personne", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
             $titre          = filter_input(INPUT_POST, "titre", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
             $date_sortie    = filter_input(INPUT_POST, "date_sortie", FILTER_DEFAULT);
             $duree          = filter_input(INPUT_POST, "duree", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
             $synopsis       = filter_input(INPUT_POST, "synopsis", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
             $affiche_film   = filter_input(INPUT_POST, "affiche_film", FILTER_SANITIZE_URL);
-            
-            
-            if(filter_var($duree, FILTER_VALIDATE_INT)){
-                $requete = "
-                        INSERT INTO film (titre, date_sortie, duree, synopsis, affiche_film)
-                        VALUES ($titre', '$date_sortie', '$duree', '$synopsis', '$affiche_film')
-                        ";
+            $id_genre       = filter_input(INPUT_POST, "genre", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
+
+            if(filter_var($id_personne, FILTER_VALIDATE_INT) && filter_var($duree, FILTER_VALIDATE_INT) && filter_var($id_genre, FILTER_VALIDATE_INT)){
+                $pdo = Connect::seConnecter();
+                $requeteRealisateur1 = "
+                        INSERT INTO realisateur (id_personne)
+                        SELECT '$id_personne'
+                        WHERE NOT EXISTS (SELECT * FROM realisateur WHERE realisateur.id_personne = $id_personne);
+                        ";
+                $this->exec_modif($requeteRealisateur1);
+                    
+                $realisateurID =  $pdo->lastInsertId();
+                var_dump($realisateurID);
+
+                $requete = "
+                        INSERT INTO film (id_realisateur, titre, date_sortie, duree, synopsis, affiche_film)
+                        SELECT ($realisateurID, '$titre', '$date_sortie', '$duree', '$synopsis', '$affiche_film')
+                        WHERE NOT EXISTS (SELECT * FROM film WHERE film.titre = $titre);
+                        ";
+                              
+                $requeteGenre = "
+                        INSERT INTO gestion_genre (id_film, id_genre)
+                        VALUES ((SELECT id_film FROM film WHERE film.titre = '$titre'), $id_genre)
+                        ";
+                            
+                
                 $this->exec_modif($requete);
-                $this->viewAdd();
+                // $this->exec_modif($requeteGenre);
+
             }
+            $this->viewAdd();
+
+
 
             
         }
@@ -374,7 +414,9 @@ class CinemaController {
 
     public function viewAddFilm(){
         // Liste des realisateurs contenu dans la base de données pour le choix du réalisateur lors de la modification
-        $requete_listRealisateurs           = $this->listRealisateurs("defaut");
+        $requete_listPersonne           = $this->listPersonne();
+        // 
+        $requete_listGenre              = $this->listGenre();
         require "view/viewAddFilm.php";
     }
 

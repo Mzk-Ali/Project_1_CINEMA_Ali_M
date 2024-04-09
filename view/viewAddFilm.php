@@ -15,8 +15,8 @@ ob_start(); ?>
                         <option value=""></option>
                         <option value="" selected hidden>Sélectionne le réalisateur</option>
                     <?php
-                        foreach($requete_listRealisateurs->fetchAll() as $keys) { ?>
-                            <option value="<?=$keys["id"]?>"><?=$keys["personne"]?></option>
+                        foreach($requete_listPersonne->fetchAll() as $keys) { ?>
+                            <option value="<?=$keys["id_personne"]?>"><?=$keys["personne"]?></option>
                         <?php }?>
                     </select>
                     <p>Si le réalisateur n'est pas présent, veuillez ajouter son profil</p>
@@ -55,6 +55,20 @@ ob_start(); ?>
                 <label for="affiche_film">Affiche du film (url de l'image)</label>
                 <div class="input_form_urlAffiche">
                     <input name="affiche_film" id="affiche_film" type="url">
+                </div>
+            </div>
+
+            <div class="genreFilm">
+                <label for="genre">Genre</label>
+                <div class="input_form_genre">
+                    <select name="genre" id="genre">
+                        <option value=""></option>
+                        <option value="" selected hidden>Sélectionne le genre</option>
+                    <?php
+                        foreach($requete_listGenre->fetchAll() as $keys) { ?>
+                            <option value="<?=$keys["id_genre"]?>"><?=$keys["genre"]?></option>
+                        <?php }?>
+                    </select>
                 </div>
             </div>
         </div>
