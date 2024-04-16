@@ -57,6 +57,18 @@ $requete = $requete_ficheFilm->fetch();?>
                     <input name="affiche_film" id="affiche_film" type="url" value="<?=$requete["affiche_film"]?>">
                 </div>
             </div>
+
+            <fieldset>
+                <legend>Choisis un ou plusieurs genres du Film</legend>
+                <ul>
+                    <?php foreach($requete_listGenre->fetchAll() as $keys) { ?>
+                        <li>
+                            <input type="checkbox" id="<?=$keys["id_genre"]?>" name="check_list[]" value="<?=$keys["id_genre"]?>">
+                            <label for="<?=$keys["id_genre"]?>"><?=$keys["genre"]?></label>
+                        </li>
+                    <?php }?>
+                </ul>
+            </fieldset>
         </div>
         
         

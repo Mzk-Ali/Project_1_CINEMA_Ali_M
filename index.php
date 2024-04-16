@@ -33,5 +33,7 @@ if(isset($_GET["action"])){
         case "personne_fiche_view"  : $ctrlCinema->viewFichePersonne($_GET["id"]); break;
         case "modif_personne"       : $ctrlCinema->viewModifPersonne($_GET["id"]); break;
         case "modifPersonne"        : $ctrlCinema->ModifPersonne($_GET["id"]); break;
+
+        //case "listRole"             : $ctrlCinema->choiceRole(); break;
     }
 }

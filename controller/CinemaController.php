@@ -393,8 +393,19 @@ class CinemaController {
             // $id_genre       = filter_input(INPUT_POST, "genre", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
 
-            // && filter_var($id_genre, FILTER_VALIDATE_INT)
-            if(filter_var($realisateur, FILTER_VALIDATE_INT) && filter_var($duree, FILTER_VALIDATE_INT)){
+
+            // requete select avec le titre 
+            $requete_prepare_verif = "
+                SELECT titre
+                FROM film
+                WHERE film.titre = :titre";
+            
+            $var_exec_verif["titre"] = "$titre";
+            $requete_recovery = $this->prep_exec_recovery($requete_prepare_verif, $var_exec_verif);
+
+
+            // si resultat alors on arrete 
+            if(filter_var($realisateur, FILTER_VALIDATE_INT) && filter_var($duree, FILTER_VALIDATE_INT) && filter_var($id_genre, FILTER_VALIDATE_INT)){
     
                 $requete_prepare = "
                     INSERT INTO film (id_realisateur, titre, date_sortie, duree, synopsis, affiche_film)
@@ -403,7 +414,7 @@ class CinemaController {
                     // ";
                 
                 // $requete_prepare = "
-                //         IF NOT EXISTS
+          
                 //             (SELECT * FROM film WHERE film.titre = 'testfilm')
                 //             BEGIN
                 //                 INSERT INTO film (id_realisateur, titre, date_sortie, duree, synopsis, affiche_film)
@@ -418,15 +429,9 @@ class CinemaController {
                         "duree" => "$duree",
                         "synopsis" => "$synopsis",
                         "affiche_film" => "$affiche_film");
-                // var_dump($var_exec);die;
+                
                 $this->prep_exec_recovery($requete_prepare, $var_exec);
                               
-
-                            
-                
-                // $this->exec_modif($requete);
-                // $this->exec_modif($requeteGenre);
-
                 foreach($_POST['check_list'] as $keys) {
                     $requete_prepare_Genre = "
                         INSERT INTO gestion_genre (id_film, id_genre)
@@ -434,6 +439,7 @@ class CinemaController {
                         ";
                     $var_exec_Genre = array("titre" => "$titre",
                                             "id_genre" => "$keys");
+                    
                     $this->prep_exec_recovery($requete_prepare_Genre, $var_exec_Genre);
                 }
 
@@ -441,12 +447,42 @@ class CinemaController {
             }
             $this->viewAdd();
 
-
-
-            
         }
     }
+
+
+    public function acteursPerRole(){
+        if(isset($_POST['submit']) && $_POST["role"] != "")
+        {
+            $nom_personnage    = filter_input(INPUT_POST, "role", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
+            $requete_prepare = "
+                    SELECT CONCAT(nom, ' ',prenom) AS personne, acteur.id_personne AS id, profil
+                    FROM personne
+                    INNER JOIN acteur
+                    ON personne.id_personne = acteur.id_personne
+                    INNER JOIN contrat
+                    ON acteur.id_acteur = contrat.id_acteur
+                    INNER JOIN role
+                    ON contrat.id_role = role.id_role
+                    WHERE nom_personnage = :nom_personnage";
+
+            $var_exec["nom_personnage"] = "$nom_personnage";
+            $requete_recovery = $this->prep_exec_recovery($requete_prepare, $var_exec);
+
+            // var_dump($nom_personnage); die;
+            return $requete_recovery;
+        }
+        else{
+            return NULL;
+        }
+        
+    }
+
 /* --------------------------------------------------------------------------------------------- */
+
+
+
 
 
 
@@ -498,6 +534,7 @@ class CinemaController {
         // Liste des Acteurs
         $requete_listActeurs                = $this->listActeurs();
         $requete_listRoles                  = $this->listRole();
+        $requete_listActeursPerRole         = $this->acteursPerRole();
         require "view/viewActeur.php";
     }
 
@@ -511,9 +548,9 @@ class CinemaController {
 
     public function viewAddFilm(){
         // Liste des realisateurs contenu dans la base de données pour le choix du réalisateur lors de la modification
-        $requete_listRealisateurs           = $this->listRealisateurs("defaut");
-        // 
-        $requete_listGenre                  = $this->listGenre();
+        $requete_listRealisateurs       = $this->listRealisateurs("defaut");
+        // Liste des genres présents dans la base de données
+        $requete_listGenre              = $this->listGenre();
         require "view/viewAddFilm.php";
     }
 
@@ -521,11 +558,11 @@ class CinemaController {
     // Fonction qui retourne toutes les réponses de requête utiles pour l'affichage de la Fiche d'un Film
     public function viewFicheFilm($id) {
         // Ensemble des informations du film
-        $requete_ficheFilm = $this->ficheFilm($id);
+        $requete_ficheFilm              = $this->ficheFilm($id);
         // Liste des genres selon l'id du film
-        $requete_genre_film = $this->genreFilm($id);
+        $requete_genre_film             = $this->genreFilm($id);
         // Liste des Acteurs et leur role dans le film selon l'id du film
-        $requete_listActeursThisFilm = $this->listActeursAndRoleperFilm($id);
+        $requete_listActeursThisFilm    = $this->listActeursAndRoleperFilm($id);
         require "view/ficheFilm.php";
     }
 
@@ -533,11 +570,11 @@ class CinemaController {
     // Fonction qui retourne toutes les réponses de requête utiles pour l'affichage de la Fiche d'une Personne
     public function viewFichePersonne($id) {
         // Ensemble des informations d'une Personne selon son id
-        $requete_fichePersonne = $this->fichePersonne($id);
+        $requete_fichePersonne              = $this->fichePersonne($id);
         // Liste des films réalisés par un réalisateur selon son id
-        $requete_listFilmsPerRealisateur = $this->listFilmsPerRealisateur($id);
+        $requete_listFilmsPerRealisateur    = $this->listFilmsPerRealisateur($id);
         // Liste des films dont un acteur est présent selon son id
-        $requete_listFilmsPerActeur = $this->listFilmsPerActeur($id);
+        $requete_listFilmsPerActeur         = $this->listFilmsPerActeur($id);
         require "view/fichePersonne.php";
     }
     
@@ -545,9 +582,11 @@ class CinemaController {
     // Fonction qui retourne toutes les réponses de requête utiles pour l'affichage de la Modification d'un film
     public function viewModifFilm($id){
         // Liste des realisateurs contenu dans la base de données pour le choix du réalisateur lors de la modification
-        $requete_listRealisateurs = $this->listRealisateurs("defaut");
+        $requete_listRealisateurs       = $this->listRealisateurs("defaut");
         // Ensemble des données d'un film selon l'id
-        $requete_ficheFilm = $this->ficheFilm($id);
+        $requete_ficheFilm              = $this->ficheFilm($id);
+        // Liste des genres présents dans la base de données
+        $requete_listGenre              = $this->listGenre();
         require "view/filmModif.php";
     }
 
@@ -555,7 +594,7 @@ class CinemaController {
     // Fonction qui retourne toutes les réponses de requête utiles pour l'affichage de la Modification d'une Personne
     public function viewModifPersonne($id){
         // Ensemble des informations d'une Personne selon son id
-        $requete_fichePersonne = $this->fichePersonne($id);
+        $requete_fichePersonne          = $this->fichePersonne($id);
         require "view/personneModif.php";
     }
 
@@ -567,4 +606,5 @@ class CinemaController {
     public function ModifPersonne($id){
         $this->modifPersonne_requete($id);
     }
+
 }

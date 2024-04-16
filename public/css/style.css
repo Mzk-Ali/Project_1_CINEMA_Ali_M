@@ -77,7 +77,7 @@ nav{
 }
 
 .nav_item:hover{
-    transform: translateY(-10px);
+    transform: translateY(-5px);
 }
 
 /* ----------------------------------  MAIN  ------------------------------- */
@@ -499,7 +499,7 @@ textarea{
 }
 
 .container_add{
-    background-color: rgba(153, 119, 0, 1);
+    background-color: rgb(153, 119, 0);
     border-radius: 30px;
     width: 30vw;
     /* height: 40px; */
@@ -549,3 +549,32 @@ fieldset ul li:hover {
 fieldset ul li input {
     width: 30px;
   }
+
+
+
+
+/* --------------------------------- */
+
+.container_list_role{
+    margin: 5px 30px; 
+}
+
+.container_list_role select{
+    padding: 5px 10px;
+    background-color:beige;
+    border: none;
+}
+
+.container_list_role input{
+    padding: 5px 10px;
+    background-color:beige;
+    border: none;
+    transition: 0.5s;
+    border-radius: 10px;
+}
+
+.container_list_role input:hover{
+    transform: scale(1.1);
+    background-color: rgb(153, 119, 0);
+
+}

@@ -23,13 +23,13 @@ function list_defilement($type, $action, $titre_list, $requete_list, $requete_se
         }
         else if($type == "listActeursperRole"){?>
             <div class="container_list_role">
-                <form action="">
+                <form action="index.php?action=acteur_view" method="post">
                     <select name="role" id="role">
                         <option value=""></option>
                         <option value="" selected hidden>Sélectionne le Role</option>
                         <?php
                             foreach($requete_secondList->fetchAll() as $keys) { ?>
-                                <option value="<?=$keys["id_role"]?>"><?=$keys["nom_personnage"]?></option>
+                                <option value="<?=$keys["nom_personnage"]?>"><?=$keys["nom_personnage"]?></option>
                         <?php }?>
                     </select>
                     <input class="" type="submit" name="submit" value="GO">
@@ -46,6 +46,11 @@ function list_defilement($type, $action, $titre_list, $requete_list, $requete_se
             </div>
             <div class="container_list">
                 <?php
+                if($requete_list == NULL)
+                {
+                    echo "La liste est vide. Veuillez ajouter ou choisir si il est demandé";
+                }
+                else{
                 foreach($requete_list->fetchAll() as $keys) { ?>
                     <a href="index.php?action=<?=$action?>&id=<?=$keys["id"]?>">
                         <div class="container_card">
@@ -56,11 +61,7 @@ function list_defilement($type, $action, $titre_list, $requete_list, $requete_se
                                         {
                                             echo $keys["affiche_film"];
                                         }
-                                        elseif($type == "listActeurs")
-                                        {
-                                            echo $keys["profil"];
-                                        }
-                                        elseif($type == "listRealisateurs")
+                                        elseif($type == "listActeurs" || $type == "listRealisateurs" || $type == "listActeursperRole")
                                         {
                                             echo $keys["profil"];
                                         }
@@ -77,7 +78,7 @@ function list_defilement($type, $action, $titre_list, $requete_list, $requete_se
                                     {
                                         echo $keys["personne"]." / ".$keys["nom_personnage"];
                                     }
-                                    elseif($type == "listRealisateurs")
+                                    elseif($type == "listRealisateurs" || $type == "listActeursperRole")
                                     {
                                         echo $keys["personne"];
                                     }
@@ -85,7 +86,7 @@ function list_defilement($type, $action, $titre_list, $requete_list, $requete_se
                             </div>
                         </div>
                     </a>
-                <?php }?>
+                <?php }}?>
             </div>
             <div class="right_button list_button">
                 <i class="ri-arrow-right-s-line"></i>
