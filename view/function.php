@@ -1,7 +1,7 @@
 <?php
 
 
-function list_defilement($type, $action, $titre_list, $requete_list, $requete_listGenre){
+function list_defilement($type, $action, $titre_list, $requete_list, $requete_secondList){
     ?>
     <section class="list_defilement">
         <h2><?= $titre_list ?></h2>
@@ -10,7 +10,7 @@ function list_defilement($type, $action, $titre_list, $requete_list, $requete_li
         if($type == "listFilmsGenre"){?>
             <div class="container_button_genre">
                 <?php 
-                foreach($requete_listGenre->fetchAll() as $keys)
+                foreach($requete_secondList->fetchAll() as $keys)
                 {?>
                 <a href="index.php?action=film_view&genre=<?=$keys["genre"]?>">
                     <div class="button_genre"><?=$keys["genre"]?></div>
@@ -18,6 +18,22 @@ function list_defilement($type, $action, $titre_list, $requete_list, $requete_li
                 <?php
                 }
                 ?>
+            </div>
+        <?php
+        }
+        else if($type == "listActeursperRole"){?>
+            <div class="container_list_role">
+                <form action="">
+                    <select name="role" id="role">
+                        <option value=""></option>
+                        <option value="" selected hidden>Sélectionne le Role</option>
+                        <?php
+                            foreach($requete_secondList->fetchAll() as $keys) { ?>
+                                <option value="<?=$keys["id_role"]?>"><?=$keys["nom_personnage"]?></option>
+                        <?php }?>
+                    </select>
+                    <input class="" type="submit" name="submit" value="GO">
+                </form>
             </div>
         <?php
         }

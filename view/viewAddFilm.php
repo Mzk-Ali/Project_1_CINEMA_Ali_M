@@ -9,14 +9,14 @@ ob_start(); ?>
     <form action="index.php?action=addFilm" method="post">
         <div class="container_formFilm">
             <div class="realisateurFilm">
-                <label for="personne">Réalisateur</label>
+                <label for="realisateur">Réalisateur</label>
                 <div class="input_form_realisateur">
-                    <select name="personne" id="personne">
+                    <select name="realisateur" id="realisateur">
                         <option value=""></option>
                         <option value="" selected hidden>Sélectionne le réalisateur</option>
                     <?php
-                        foreach($requete_listPersonne->fetchAll() as $keys) { ?>
-                            <option value="<?=$keys["id_personne"]?>"><?=$keys["personne"]?></option>
+                        foreach($requete_listRealisateurs->fetchAll() as $keys) { ?>
+                            <option value="<?=$keys["id_realisateur"]?>"><?=$keys["personne"]?></option>
                         <?php }?>
                     </select>
                     <p>Si le réalisateur n'est pas présent, veuillez ajouter son profil</p>
@@ -58,19 +58,17 @@ ob_start(); ?>
                 </div>
             </div>
 
-            <div class="genreFilm">
-                <label for="genre">Genre</label>
-                <div class="input_form_genre">
-                    <select name="genre" id="genre">
-                        <option value=""></option>
-                        <option value="" selected hidden>Sélectionne le genre</option>
-                    <?php
-                        foreach($requete_listGenre->fetchAll() as $keys) { ?>
-                            <option value="<?=$keys["id_genre"]?>"><?=$keys["genre"]?></option>
-                        <?php }?>
-                    </select>
-                </div>
-            </div>
+            <fieldset>
+                <legend>Choisis un ou plusieurs genres du Film</legend>
+                <ul>
+                    <?php foreach($requete_listGenre->fetchAll() as $keys) { ?>
+                        <li>
+                            <input type="checkbox" id="<?=$keys["id_genre"]?>" name="check_list[]" value="<?=$keys["id_genre"]?>">
+                            <label for="<?=$keys["id_genre"]?>"><?=$keys["genre"]?></label>
+                        </li>
+                    <?php }?>
+                </ul>
+            </fieldset>
         </div>
         
         <div class="formulaire_add_button">

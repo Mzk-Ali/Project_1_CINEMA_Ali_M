@@ -5,6 +5,7 @@ include "function.php";?>
 
 <?php
     list_defilement("listRealisateurs", "personne_fiche_view", "Acteurs", $requete_listActeurs, "defaut");
+    list_defilement("listActeursperRole", "personne_fiche_view", "Acteurs", $requete_listActeurs, $requete_listRoles);
 ?>
 
 <?php
