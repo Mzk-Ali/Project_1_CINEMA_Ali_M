@@ -18,7 +18,7 @@ $requete = $requete_ficheFilm->fetch();?>
         <div class="info_logo">
             <div class="caracteristique">
                 <span>Réalisé par : <?php echo $requete["personne"];?></span>
-                <span>Sortie le : <?php echo $requete["date_sortie"]."  |   Durée : ".$requete["duree"]." minutes   |   ";
+                <span>Sortie le : <?php echo date('d-m-Y', strtotime($requete["date_sortie"]))."  |   Durée : ".$requete["duree"]." minutes   |   ";
                                         foreach($requete_genre_film->fetchAll() as $keys){ 
                                             echo $keys["genre"]." ";
                                         }?></span>

@@ -361,6 +361,10 @@ flex: 0 0 auto;
     gap: 1vh;
 }
 
+.chiffre span{
+    text-align: center;
+}
+
 .icon_chiffre{
     display: flex;
     flex-direction: column;
