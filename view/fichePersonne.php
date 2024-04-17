@@ -24,7 +24,7 @@ $requete = $requete_fichePersonne->fetch();
         </a>
         <div class="chiffre">
             <div class="chiffre_film">
-                <span>Film réalisé</span>
+                <span>Film réalisé<br></span>
             </div>
             <div class="chiffre_acteur">
                 <span>Acteur</span>
@@ -35,6 +35,8 @@ $requete = $requete_fichePersonne->fetch();
 </section>
 
 <?php
+    echo $requete_listFilmsPerRealisateur->num_rows;
+    // var_dump($requete_listFilmsPerRealisateur);
     list_defilement("listFilms", "film_fiche_view", "Films réalisés", $requete_listFilmsPerRealisateur, "defaut");
     list_defilement("listFilms", "film_fiche_view", "Filmographie/Role", $requete_listFilmsPerActeur, "defaut");
 ?>

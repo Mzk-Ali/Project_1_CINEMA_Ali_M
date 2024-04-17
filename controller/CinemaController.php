@@ -255,7 +255,7 @@ class CinemaController {
             $synopsis       = filter_input(INPUT_POST, "synopsis", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
             $affiche_film   = filter_input(INPUT_POST, "affiche_film", FILTER_SANITIZE_URL);
             
-            if(filter_var($id_realisateur, FILTER_VALIDATE_INT)){
+            if(filter_var($id_realisateur, FILTER_VALIDATE_INT) && filter_var($duree, FILTER_VALIDATE_INT)){
                 $requete_prepare_realisateur = "
                             UPDATE film, realisateur
                             SET film.id_realisateur = realisateur.id_realisateur
@@ -266,9 +266,8 @@ class CinemaController {
                             "id" => "$id");
                 
                 $this->prep_exec_recovery($requete_prepare_realisateur, $var_exec_realis);
-            }
+
             
-            if(filter_var($duree, FILTER_VALIDATE_INT)){
                 $requete_prepare = "
                             UPDATE film
                             SET titre = :titre, 
@@ -285,6 +284,24 @@ class CinemaController {
                             "affiche_film" => "$affiche_film",
                             "id" => "$id");
                 $this->prep_exec_recovery($requete_prepare, $var_exec);
+
+                $requete_prepare_delete_genre = "
+                            DELETE FROM gestion_genre
+                            WHERE gestion_genre.id_film = :id
+                            ";
+                $var_exec_del_genre["id"] = "$id";
+                $this->prep_exec_recovery($requete_prepare_delete_genre, $var_exec_del_genre);
+
+                foreach($_POST['check_list'] as $keys) {
+                    $requete_prepare_Genre = "
+                        INSERT INTO gestion_genre (id_film, id_genre)
+                        VALUES ((SELECT id_film FROM film WHERE film.titre = :titre), :id_genre)
+                        ";
+                    $var_exec_Genre = array("titre" => "$titre",
+                                            "id_genre" => "$keys");
+                    
+                    $this->prep_exec_recovery($requete_prepare_Genre, $var_exec_Genre);
+                }
             }
 
             $this->viewFicheFilm($id);
