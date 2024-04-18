@@ -13,7 +13,7 @@ $requeteActeur          = $requete_infosActeur->fetchAll();
         <img src="<?= $requete["profil"];?>" alt="">
     </div>
     <div class="personne_info">
-        <span>Métier                : <?php if($requeteRealisateur){echo " Realisateur ";} if($requeteActeur){echo " Acteur ";}?></span>
+        <span>Métier                : <?php if($requeteRealisateur){echo " - Realisateur ";} if($requeteActeur){echo " - Acteur ";}?></span>
         <span>Date de Naissance     : <?php echo date('d-m-Y', strtotime($requete["date_naissance"]))?></span><br>
         <?php if($requeteRealisateur){?>
         <span>1ère Réalisation      : <?= $requeteRealisateur[0]["titre"]?></span>
@@ -43,7 +43,7 @@ $requeteActeur          = $requete_infosActeur->fetchAll();
 
 <?php
     list_defilement("listFilms", "film_fiche_view", "Films réalisés", $requete_listFilmsPerRealisateur, "defaut");
-    list_defilement("listFilms", "film_fiche_view", "Filmographie/Role", $requete_listFilmsPerActeur, "defaut");
+    list_defilement("listFilmsAndRole", "film_fiche_view", "Filmographie/Role", $requete_listFilmsAndRolePerActeur, "defaut");
 ?>
 
 <?php

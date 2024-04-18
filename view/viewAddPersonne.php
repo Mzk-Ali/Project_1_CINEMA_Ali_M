@@ -8,6 +8,20 @@ ob_start(); ?>
 
     <form action="index.php?action=addPersonne" method="post">
         <div class="container_formFilm">
+            <fieldset class="container_check_work">
+                <legend>Métier du profil à ajouter : </legend>
+                <ul>
+                    <li>
+                        <input type="checkbox" id="check_realisateur" name="check_work[realisateur]" value="check_realisateur">
+                        <label for="check_realisateur">REALISATEUR</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="check_acteur" name="check_work[acteur]" value="check_acteur">
+                        <label for="check_acteur">ACTEUR</label>
+                    </li>
+                </ul>
+            </fieldset>
+
             <div class="nom">
                 <label for="nom">Nom</label>
                 <div class="input_form_nom">

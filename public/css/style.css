@@ -91,6 +91,7 @@ main{
 h2{
     color: var(--title-color);
     margin-bottom: 10px;
+    text-align: center;
 }
 
 h1{
@@ -101,7 +102,7 @@ h1{
 }
 
 
-/* List defilement */
+/* --------- Liste Defilement ------ */
 
 .list_defilement{
     margin: 5vh 8vw;
@@ -112,7 +113,7 @@ h1{
     align-items: center;
     border-radius: 20px;
     background-color: rgba(217, 217, 217, 0.4);
-    height: 300px;
+    height: 30vh;
 }
 
 .container_button_genre{
@@ -138,9 +139,8 @@ h1{
 
 .container_list{
     display: flex;
-    justify-content: center;
     align-items: center;
-    /* align-items: center; */
+    /* justify-content: center; */
     /* display: grid;
     grid-auto-flow: column;
     grid-auto-columns: 25%; */
@@ -216,7 +216,7 @@ flex: 0 0 auto;
     background-color: var(--navbar_color);
     transform: translateY(-10px) scale(1.2);
 }
-
+/* --------------------------------- */
 
 
 
@@ -443,7 +443,7 @@ textarea{
     color: white;
     font-size: 130%;
     border-radius: 20px;
-    padding: 2% 5vw;
+    padding: 4% 0;
     width: 40%;
     cursor: pointer;
     transition: 1s;
@@ -554,7 +554,9 @@ fieldset ul li input {
     width: 30px;
   }
 
-
+.container_check_work ul{
+    display: flex;
+}
 
 
 /* --------------------------------- */

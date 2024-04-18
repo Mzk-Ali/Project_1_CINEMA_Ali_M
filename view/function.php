@@ -51,42 +51,46 @@ function list_defilement($type, $action, $titre_list, $requete_list, $requete_se
                     echo "La liste est vide. Veuillez ajouter ou choisir si il est demandé";
                 }
                 else{
-                foreach($requete_list->fetchAll() as $keys) { ?>
-                    <a href="index.php?action=<?=$action?>&id=<?=$keys["id"]?>">
-                        <div class="container_card">
-                            <div class="img_card">
-                                <img src="
-                                    <?php 
+                    foreach($requete_list->fetchAll() as $keys) { ?>
+                        <a href="index.php?action=<?=$action?>&id=<?=$keys["id"]?>">
+                            <div class="container_card">
+                                <div class="img_card">
+                                    <img src="
+                                        <?php 
+                                            if($type == "listFilms" || $type == "listFilmsGenre" || $type == "listFilmsAndRole")
+                                            {
+                                                echo $keys["affiche_film"];
+                                            }
+                                            elseif($type == "listActeurs" || $type == "listRealisateurs" || $type == "listActeursperRole")
+                                            {
+                                                echo $keys["profil"];
+                                            }
+                                         ?>
+                                    " alt="affiche film">
+                                </div>
+                                <div class="info_card">
+                                    <p><?php 
                                         if($type == "listFilms" || $type == "listFilmsGenre")
                                         {
-                                            echo $keys["affiche_film"];
+                                            echo $keys["titre"];
                                         }
-                                        elseif($type == "listActeurs" || $type == "listRealisateurs" || $type == "listActeursperRole")
+                                        elseif($type == "listActeurs")
                                         {
-                                            echo $keys["profil"];
+                                            echo $keys["personne"]." / ".$keys["nom_personnage"];
                                         }
-                                     ?>
-                                " alt="affiche film">
+                                        elseif($type == "listRealisateurs" || $type == "listActeursperRole")
+                                        {
+                                            echo $keys["personne"];
+                                        }
+                                        elseif($type == "listFilmsAndRole")
+                                        {
+                                            echo $keys["titre"]." / ".$keys["nom_personnage"];
+                                        }
+                                     ?></p>
+                                </div>
                             </div>
-                            <div class="info_card">
-                                <p><?php 
-                                    if($type == "listFilms" || $type == "listFilmsGenre")
-                                    {
-                                        echo $keys["titre"];
-                                    }
-                                    elseif($type == "listActeurs")
-                                    {
-                                        echo $keys["personne"]." / ".$keys["nom_personnage"];
-                                    }
-                                    elseif($type == "listRealisateurs" || $type == "listActeursperRole")
-                                    {
-                                        echo $keys["personne"];
-                                    }
-                                 ?></p>
-                            </div>
-                        </div>
-                    </a>
-                <?php }}?>
+                        </a>
+                    <?php }}?>
             </div>
             <div class="right_button list_button">
                 <i class="ri-arrow-right-s-line"></i>

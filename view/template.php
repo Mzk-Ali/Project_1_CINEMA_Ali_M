@@ -40,6 +40,17 @@
         <h1><?= $titre ?></h1>
         <?= $contenu ?>
     </main>
+
+    <footer>
+        <div class="container_footer">
+            <p>Mentions Légales</p>
+            <p>Gestion des cookies</p>
+            <p>Plan du Site</p>
+            <div class="container_logo">
+                
+            </div>
+        </div>
+    </footer>
     
 </body>
     <script src="public/js/swiper-bundle.min.js"></script>

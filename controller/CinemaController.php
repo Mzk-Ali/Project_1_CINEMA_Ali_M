@@ -146,7 +146,7 @@ class CinemaController {
     }
 
 
-    // Liste Acteur selon l'id d'un film
+    // Liste Acteur et son rôle selon l'id d'un film
     public function listActeursAndRoleperFilm($id) {
         $requete_prepare = "
             SELECT CONCAT(nom, ' ',prenom) AS personne, nom_personnage, acteur.id_personne AS id, profil
@@ -164,8 +164,29 @@ class CinemaController {
         return $requete_recovery;
     }
 
+    // Liste Film et rôle joué selon l'id de la personne
+    public function listFilmsAndRoleperActeur($id)
+    {
+        $requete_prepare = "
+            SELECT titre, nom_personnage, affiche_film, film.id_film AS id
+            FROM film
+            INNER JOIN contrat
+            ON film.id_film = contrat.id_film
+            INNER JOIN role
+            ON contrat.id_role = role.id_role
+            INNER JOIN acteur
+            ON contrat.id_acteur = acteur.id_acteur
+            WHERE acteur.id_personne = :id
+        ";
+        $var_exec["id"] = "$id";
+
+        $requete_recovery = $this->prep_exec_recovery($requete_prepare, $var_exec);
+        return $requete_recovery;
+    }
+
+
     // Fiche Film
-    public function ficheFilm($id){ //DATE_FORMAT(SEC_TO_TIME(duree*60), '%H:%i') AS duree
+    public function ficheFilm($id){
         $requete_prepare = "
             SELECT titre, affiche_film, note, synopsis, date_sortie, duree, CONCAT(nom, ' ',prenom) AS personne, film.id_film AS id
             FROM film
@@ -389,15 +410,16 @@ class CinemaController {
             $this->viewFichePersonne($id);
         }
 
-        // if(isset($_POST['delete'])){
-        //     $requete_delete = "
-        //                         DELETE FROM 'film'
-        //                         WHERE film.id_film = $id
-        //                         ";
+        if(isset($_POST['delete'])){
+            $requete_prepare_delete_personne = "
+                                        DELETE FROM personne
+                                        WHERE personne.id_personne = :id
+                                        ";
+            $var_exec_del_personne["id"] = "$id";
+            $this->prep_exec_recovery($requete_prepare_delete_personne, $var_exec_del_personne);
 
-        //     $this->exec_modif($requete_delete);
-        //     $this->viewHome();
-        // }
+            $this->viewHome();
+        }
     }
 
     public function addPersonne(){
@@ -409,17 +431,45 @@ class CinemaController {
             $date_naissance = filter_input(INPUT_POST, "date_naissance", FILTER_DEFAULT);
             $profil         = filter_input(INPUT_POST, "profil", FILTER_SANITIZE_URL);
 
+            // Connexion à la base de données voulu
+            $pdo = Connect::seConnecter();
+            // Prepare la requête
             $requete_prepare = "
                 INSERT INTO personne (nom, prenom, sexe, date_naissance, profil)
                 VALUES (:nom, :prenom, :sexe, :date_naissance, :profil)
                 ";
+            $requete_recovery = $pdo->prepare("$requete_prepare");
+
+            // Execute avec les variables présents dans la requête
             $var_exec = array("nom" => "$nom",
                             "prenom" => "$prenom",
                             "sexe" => "$sexe",
                             "date_naissance" => "$date_naissance",
                             "profil" => "$profil");
-            $this->prep_exec_recovery($requete_prepare, $var_exec);
+            $requete_recovery->execute($var_exec);
 
+            // Récupération de la dernière id ajouté dans la table personne
+            $id_personne = $pdo->lastInsertId();
+
+            foreach($_POST['check_work'] as $keys) {
+                //var_dump($keys);
+                if($keys == "check_realisateur")
+                {
+                    $requete_prepare_work = "
+                        INSERT INTO realisateur (id_personne)
+                        VALUES (:id_personne)";
+                    // echo "realisateur";
+                }
+                else if($keys == "check_acteur")
+                {
+                    $requete_prepare_work = "
+                        INSERT INTO acteur (id_personne)
+                        VALUES (:id_personne)";
+                    // echo "acteur";
+                }
+                $var_exec_work["id_personne"] = "$id_personne";
+                $this->prep_exec_recovery($requete_prepare_work, $var_exec_work);
+            }
             $this->viewAdd();
         }
     }
@@ -616,7 +666,7 @@ class CinemaController {
         // Liste des films réalisés par un réalisateur selon son id
         $requete_listFilmsPerRealisateur    = $this->listFilmsPerRealisateur($id);
         // Liste des films dont un acteur est présent selon son id
-        $requete_listFilmsPerActeur         = $this->listFilmsPerActeur($id);
+        $requete_listFilmsAndRolePerActeur  = $this->listFilmsAndRoleperActeur($id);
         // Informations Réalisateur
         $requete_infosRealisateur           = $this->infosRealisateur($id);
         // Informations Acteur
