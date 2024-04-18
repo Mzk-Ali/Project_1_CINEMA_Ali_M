@@ -212,7 +212,6 @@ class CinemaController {
         return $requete_recovery;
     }
 
-
     // Filmographie en tant que réalisateur
     public function listFilmsPerRealisateur($id){
         $requete_prepare = "
@@ -312,6 +311,10 @@ class CinemaController {
 
 
 
+
+
+
+
     // Fonction qui s'occupue de la modification et de la suppression d'un FILM
     public function ModifFilm($id){
         // Requetes de modification des données d'un film lors de l'envoi du formulaire à l'appui du bouton VALIDER
@@ -323,8 +326,10 @@ class CinemaController {
             $duree          = filter_input(INPUT_POST, "duree", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
             $synopsis       = filter_input(INPUT_POST, "synopsis", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
             $affiche_film   = filter_input(INPUT_POST, "affiche_film", FILTER_SANITIZE_URL);
+
+
             if(filter_var($id_realisateur, FILTER_VALIDATE_INT) && filter_var($duree, FILTER_VALIDATE_INT)){
-                
+                // ----------- Modification du realisateur du film -----------------
                 $requete_prepare_realisateur = "
                             UPDATE film, realisateur
                             SET film.id_realisateur = realisateur.id_realisateur
@@ -336,7 +341,7 @@ class CinemaController {
                 
                 $this->prepAndExecAndRecovery($requete_prepare_realisateur, $var_exec_realis);
 
-            
+                // ------------ Modification des propriétés du film ----------------
                 $requete_prepare = "
                             UPDATE film
                             SET titre = :titre, 
@@ -354,27 +359,18 @@ class CinemaController {
                             "id" => "$id");
                 $this->prepAndExecAndRecovery($requete_prepare, $var_exec);
 
-                $requete_prepare_delete_genre = "
-                            DELETE FROM gestion_genre
-                            WHERE gestion_genre.id_film = :id
-                            ";
-                $var_exec_del_genre["id"] = "$id";
-                $this->prepAndExecAndRecovery($requete_prepare_delete_genre, $var_exec_del_genre);
-
-                // var_dump($_POST['check_list']); die;
+                // Modification si et seulement si les genres du film ont été modifiés
                 if(isset($_POST['check_list']))
                 {
-                    die;
+                    // --------- Suppression des anciens genres du film ------------
+                    $requete_prepare_delete_genre = "
+                        DELETE FROM gestion_genre
+                        WHERE gestion_genre.id_film = :id
+                    ";
+                    $var_exec_del_genre["id"] = "$id";
+                    $this->prepAndExecAndRecovery($requete_prepare_delete_genre, $var_exec_del_genre);
 
-
-
-// A regler
-
-
-
-
-
-
+                    // ----------- Ajout des nouveaux genres du film ----------------
                     foreach($_POST['check_list'] as $keys) {
                         $requete_prepare_Genre = "
                             INSERT INTO gestion_genre (id_film, id_genre)
@@ -386,14 +382,22 @@ class CinemaController {
                         $this->prepAndExecAndRecovery($requete_prepare_Genre, $var_exec_Genre);
                     }
                 }
+                $alert_message  = "SUCCESS : Le film a bien été modifié";
+                $alert_type     = "success";
             }
-
+            else
+            {
+                $alert_message  = "WARNING : Veuillez vérifier les données entrées du film et réessayer";
+                $alert_type     = "warning";
+            }
+            // Redirection vers la Fiche de ce Film après modification
             $this->viewFicheFilm($id);
         }
 
         // Requetes de suppression des données d'un film lors de l'appui sur le bouton SUPPRIMER
         if(isset($_POST['delete']))
         {
+            // ------------- Suppression des genres du film ------------------------
             $requete_prepare_delete_genre = "
                                         DELETE FROM gestion_genre
                                         WHERE gestion_genre.id_film = :id
@@ -401,6 +405,7 @@ class CinemaController {
             $var_exec_del_genre["id"] = "$id";
             $this->prepAndExecAndRecovery($requete_prepare_delete_genre, $var_exec_del_genre);
 
+            // ------------------ Suppression du film ------------------------------
             $requete_prepare_delete_film = "
                                         DELETE FROM film
                                         WHERE film.id_film = :id
@@ -408,7 +413,11 @@ class CinemaController {
             $var_exec_del_film["id"] = "$id";
             $this->prepAndExecAndRecovery($requete_prepare_delete_film, $var_exec_del_film);
 
-            $this->viewHome();
+            $alert_message  = "SUCCESS : Le film a bien été supprimé";
+            $alert_type     = "success";
+
+            // Redirection vers la page HOME après suppression du FILM
+            header("Location:index.php?action=home_view");
         }
     }
 
@@ -423,6 +432,7 @@ class CinemaController {
             $date_naissance = filter_input(INPUT_POST, "date_naissance", FILTER_DEFAULT);
             $profil         = filter_input(INPUT_POST, "profil", FILTER_SANITIZE_URL);
             
+            // ------------ Modification des propriétés de la personne -------------
             $requete_prepare = "
                         UPDATE personne
                         SET nom = :nom, 
@@ -440,12 +450,15 @@ class CinemaController {
                             "id" => "$id");
             $this->prepAndExecAndRecovery($requete_prepare, $var_exec);
 
+            $alert_message  = "SUCCESS : La modifcation du profil s'est bien déroulé";
+            $type_message   = "success";
             $this->viewFichePersonne($id);
         }
 
         // Requetes de suppression des données d'une personne lors de l'appui sur le bouton SUPPRIMER
         if(isset($_POST['delete']))
         {
+            // ------------------ Suppression de la personne -----------------------
             $requete_prepare_delete_personne = "
                                         DELETE FROM personne
                                         WHERE personne.id_personne = :id
@@ -453,11 +466,13 @@ class CinemaController {
             $var_exec_del_personne["id"] = "$id";
             $this->prepAndExecAndRecovery($requete_prepare_delete_personne, $var_exec_del_personne);
 
-            $this->viewHome();
+            $alert_message  = "SUCCESS : Le profil a bien été supprimé";
+            $type_message   = "success";
+
+            // Redirection vers la page HOME après suppression de la personne
+            header("Location:index.php?action=home_view");
         }
     }
-
-
 
 
 
@@ -473,6 +488,7 @@ class CinemaController {
             $synopsis       = filter_input(INPUT_POST, "synopsis", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
             $affiche_film   = filter_input(INPUT_POST, "affiche_film", FILTER_SANITIZE_URL);
 
+            var_dump($affiche_film); die;
             // requete select avec le titre 
             $requete_prepare_verif = "
                 SELECT titre
@@ -485,6 +501,8 @@ class CinemaController {
             // Boucle vérifiant si le film n'existe pas déjà
             if($requete_verif->fetch())
             {
+                $alert_message  = "ERROR : Le film existe déjà";
+                $alert_type     = "error";
                 header("Location:index.php?action=add_view");
             }
             else
@@ -515,6 +533,8 @@ class CinemaController {
                         
                         $this->prepAndExecAndRecovery($requete_prepare_Genre, $var_exec_Genre);
                     }
+                    $alert_message  = "SUCCESS : Le film a bien été ajouté";
+                    $alert_type     = "success";
                 }
                 header("Location:index.php?action=add_view");
             }
@@ -568,6 +588,8 @@ class CinemaController {
                 $var_exec_work["id_personne"] = "$id_personne";
                 $this->prepAndExecAndRecovery($requete_prepare_work, $var_exec_work);
             }
+            $alert_message  = "SUCCES : Le profil a bien été ajouté";
+            $alert_type     = "success";
             header("Location:index.php?action=add_view");
         }
     }
@@ -634,6 +656,8 @@ class CinemaController {
     }
 
     public function viewAdd(){
+        $alert_message  = "Il s'agit d'un test";
+        $alert_type     = "warning";
         require "view/viewAdd.php";
     }
 
@@ -696,14 +720,5 @@ class CinemaController {
         $requete_fichePersonne          = $this->fichePersonne($id);
         require "view/personneModif.php";
     }
-
-
-    // public function ModifFilm($id){
-    //     $this->modifFilmRequete($id);
-    // }
-
-    // public function ModifPersonne($id){
-    //     $this->modifPersonneRequete($id);
-    // }
 
 }

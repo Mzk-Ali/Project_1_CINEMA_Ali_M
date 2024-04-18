@@ -38,6 +38,28 @@
     <main>
         <h1><?= $titre ?></h1>
         <?= $contenu ?>
+
+
+
+        <div class="container_alert <?php 
+            if($alert_type == "success"){echo "alert_validate";}
+            elseif($alert_type == "warning"){echo "alert_warning";}
+            elseif($alert_type == "error"){echo "alert_error";}
+            else{echo "alert_validate";}
+            ?> show">
+            <span class="logo_alert">
+                <i class="ri-error-warning-fill"></i>
+            </span>
+            <span class="message_alert">
+                <?php echo $alert_message; ?>
+            </span>
+            <div class="close_btn_alert">
+                <span class="close_btn">
+                    <i class="ri-close-circle-fill"></i>
+                </span>
+            </div>
+        </div>
+
     </main>
 
     <footer>
