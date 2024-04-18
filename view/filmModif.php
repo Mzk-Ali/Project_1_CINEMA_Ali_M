@@ -14,7 +14,7 @@ $requete = $requete_ficheFilm->fetch();?>
                 <div class="input_form_realisateur">
                     <select name="personne" id="personne" value="<?=$requete["personne"]?>">
                         <option value=""></option>
-                        <option value="<?=$requete["personne"]?>" selected hidden><?=$requete["personne"]?></option>
+                        <option value="<?=$requete["id"]?>" selected hidden><?=$requete["personne"]?></option>
                     <?php
                         foreach($requete_listRealisateurs->fetchAll() as $keys) { ?>
                             <option value="<?=$keys["id"]?>"><?=$keys["personne"]?></option>

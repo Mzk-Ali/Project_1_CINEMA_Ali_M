@@ -12,7 +12,7 @@ include "function.php";?>
 
 <?php
 
-$titre = "PDO Cinema";
+$titre = "WIKI CINE";
 // $titre_secondaire = "Liste des films";
 $contenu = ob_get_clean();
 require_once "template.php";

@@ -36,6 +36,7 @@ header{
     justify-content: center;
     align-items: center;
     padding: 0% 1%;
+    z-index: 10000;
 }
 
 nav{
@@ -79,11 +80,13 @@ nav{
 .nav_item:hover{
     transform: translateY(-5px);
 }
+/* ------------------------------------------------------------------------- */
+
 
 /* ----------------------------------  MAIN  ------------------------------- */
 
 main{
-    margin-top: 8vh;
+    margin: 8vh 0;
 }
 
 
@@ -148,6 +151,7 @@ h1{
     /* padding: 1% 0; */
     overflow-x: scroll;
     overscroll-behavior-inline: contain;
+    scroll-behavior: smooth;
     height: 100%;
     width: 70%;
 }
@@ -165,12 +169,16 @@ flex: 0 0 auto;
     border-radius: 15px;
     background-color:antiquewhite;
     height: 100%;
-    width: 10vw;
+    /* width: 10vw; */
     overflow: hidden;
+    /* transition: 1s; */
+}
+
+img{
     transition: 1s;
 }
 
-.container_card:hover{
+.container_card img:hover{
     transform: translateY(-10px) scale(1.1);
 }
 
@@ -179,8 +187,10 @@ flex: 0 0 auto;
 }
 
 .img_card img{
-    width: 100%;
+    width: 13vw;
     height: 100%;
+    object-fit: cover;
+    object-position: center;
 }
 
 .info_card{
@@ -584,3 +594,49 @@ fieldset ul li input {
     background-color: rgb(153, 119, 0);
 
 }
+/* ------------------------------------------------------------------------- */
+
+
+/* --------------------------------- Footer -------------------------------- */
+footer{
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    z-index: 10000;
+}
+
+
+.container_footer{
+    background-image: linear-gradient(to right bottom, rgb(255, 226, 124), rgb(153, 119, 0));
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1% 3%;
+    color: #eee;
+}
+
+.title_footer, .main_footer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.main_footer{
+    gap: 15px;
+}
+
+.logo_footer{
+    display: flex;
+    gap: 10px;
+}
+
+.title_cine{
+    color: rgb(153, 119, 0);
+    font-style: italic;
+}
+
+footer p:hover{
+    color:rgb(255, 226, 124);
+}
+
+/* ------------------------------------------------------------------------- */
