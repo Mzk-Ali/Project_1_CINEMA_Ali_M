@@ -72,12 +72,12 @@ CREATE TABLE IF NOT EXISTS `film` (
   `duree` int DEFAULT NULL,
   `synopsis` text CHARACTER SET utf8mb3 COLLATE utf8mb3_bin,
   `note` float DEFAULT NULL,
-  `affiche_film` varchar(150) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin DEFAULT NULL,
+  `affiche_film` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin DEFAULT 'https://previews.123rf.com/images/shtanzman/shtanzman1310/shtanzman131000002/23112506-cin%C3%A9ma-et-le-concept-de-l-industrie-vid%C3%A9o-conseil-d-ardoise-et-de-bobine-de-film-image-de-synth%C3%A8se.jpg',
   `id_realisateur` int DEFAULT NULL,
   PRIMARY KEY (`id_film`),
   KEY `id_realisateur` (`id_realisateur`),
   CONSTRAINT `film_ibfk_1` FOREIGN KEY (`id_realisateur`) REFERENCES `realisateur` (`id_realisateur`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
 
 -- Listage des données de la table cinema_ali.film : ~5 rows (environ)
 INSERT INTO `film` (`id_film`, `titre`, `date_sortie`, `duree`, `synopsis`, `note`, `affiche_film`, `id_realisateur`) VALUES
@@ -125,22 +125,22 @@ CREATE TABLE IF NOT EXISTS `personne` (
   `prenom` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin DEFAULT NULL,
   `sexe` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin DEFAULT NULL,
   `date_naissance` date DEFAULT NULL,
-  `profil` varchar(255) COLLATE utf8mb3_bin DEFAULT NULL,
+  `profil` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin DEFAULT 'https://st3.depositphotos.com/3581215/18899/v/450/depositphotos_188994514-stock-illustration-vector-illustration-male-silhouette-profile.jpg',
   PRIMARY KEY (`id_personne`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
 
 -- Listage des données de la table cinema_ali.personne : ~10 rows (environ)
 INSERT INTO `personne` (`id_personne`, `nom`, `prenom`, `sexe`, `date_naissance`, `profil`) VALUES
 	(1, 'MARZAK', 'Ali', 'Masculin', '1997-11-30', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTgzWVbRgqzcKa5W8URScnVUE499sHlLqmDVN43iaoKvw&s'),
 	(2, 'SPIELBERG', 'Steven', 'Masculin', '1946-12-18', 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/MKr25425_Steven_Spielberg_%28Berlinale_2023%29.jpg/1200px-MKr25425_Steven_Spielberg_%28Berlinale_2023%29.jpg'),
 	(3, 'EASTWOOD', 'Clint', 'Masculin', '1930-05-31', 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/ClintEastwoodCannesMay08.jpg/800px-ClintEastwoodCannesMay08.jpg'),
-	(4, 'GOLDBLUM', 'Jeff', 'Masculin', '1952-10-22', NULL),
-	(5, 'DERN', 'Laura', 'Feminin', '1967-02-10', NULL),
+	(4, 'GOLDBLUM', 'Jeff', 'Masculin', '1952-10-22', 'https://st3.depositphotos.com/3581215/18899/v/450/depositphotos_188994514-stock-illustration-vector-illustration-male-silhouette-profile.jpg'),
+	(5, 'DERN', 'Laura', 'Feminin', '1967-02-10', 'https://st3.depositphotos.com/3581215/18899/v/450/depositphotos_188994514-stock-illustration-vector-illustration-male-silhouette-profile.jpg'),
 	(6, 'FORD', 'Harrison', 'Masculin', '1942-07-13', 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Harrison_Ford_by_Gage_Skidmore_2.jpg/1200px-Harrison_Ford_by_Gage_Skidmore_2.jpg'),
-	(7, 'DOODY', 'Alison', 'Feminin', '1966-03-09', NULL),
-	(8, 'HER', 'Ahney', 'Feminin', '1993-07-13', NULL),
-	(9, 'WALLACH', 'Eli', 'Masculin', '1915-12-07', NULL),
-	(10, 'SMAIL', 'Stephane', 'Masculin', '1985-12-10', NULL);
+	(7, 'DOODY', 'Alison', 'Feminin', '1966-03-09', 'https://st3.depositphotos.com/3581215/18899/v/450/depositphotos_188994514-stock-illustration-vector-illustration-male-silhouette-profile.jpg'),
+	(8, 'HER', 'Ahney', 'Feminin', '1993-07-13', 'https://st3.depositphotos.com/3581215/18899/v/450/depositphotos_188994514-stock-illustration-vector-illustration-male-silhouette-profile.jpg'),
+	(9, 'WALLACH', 'Eli', 'Masculin', '1915-12-07', 'https://st3.depositphotos.com/3581215/18899/v/450/depositphotos_188994514-stock-illustration-vector-illustration-male-silhouette-profile.jpg'),
+	(10, 'SMAIL', 'Stephane', 'Masculin', '1985-12-10', 'https://st3.depositphotos.com/3581215/18899/v/450/depositphotos_188994514-stock-illustration-vector-illustration-male-silhouette-profile.jpg');
 
 -- Listage de la structure de table cinema_ali. realisateur
 CREATE TABLE IF NOT EXISTS `realisateur` (
@@ -149,7 +149,7 @@ CREATE TABLE IF NOT EXISTS `realisateur` (
   PRIMARY KEY (`id_realisateur`),
   UNIQUE KEY `id_personne` (`id_personne`),
   CONSTRAINT `realisateur_ibfk_1` FOREIGN KEY (`id_personne`) REFERENCES `personne` (`id_personne`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
 
 -- Listage des données de la table cinema_ali.realisateur : ~3 rows (environ)
 INSERT INTO `realisateur` (`id_realisateur`, `id_personne`) VALUES

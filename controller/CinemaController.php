@@ -56,8 +56,15 @@ class CinemaController {
             }
             if($filtre != "defaut")
             {
-                $requete_prepare .= 'ORDER BY :filtre DESC';
-                $var_exec[":filtre"] = "$filtre";
+                if($filtre == "note"){
+                    $requete_prepare .= 'ORDER BY film.note DESC';
+                }
+                else if($filtre == "date_sortie"){
+                    $requete_prepare .= 'ORDER BY film.date_sortie DESC';
+                }
+                else if($filtre == "duree"){
+                    $requete_prepare .= 'ORDER BY film.duree DESC';
+                }
             }
             $requete_recovery = $this->prepAndExecAndRecovery($requete_prepare, $var_exec);
         }
@@ -78,7 +85,15 @@ class CinemaController {
     public function listRealisateurs($filtre) {
         $requete = "SELECT ";
         if($filtre != "defaut"){
-            $requete .= ":filtre AS filtre, ";
+            if($filtre == "nombre"){
+                $requete .= "COUNT(id_film) AS filtre, ";
+            }
+            else if($filtre == "note"){
+                $requete .= "AVG(note) AS filtre, ";
+            }
+            else{
+                $requete .= "personne.date_naissance AS filtre, ";
+            }
         }
          
         $requete .= "CONCAT(nom, ' ',prenom) AS personne, realisateur.id_personne AS id, realisateur.id_realisateur AS id_realisateur, profil
@@ -92,9 +107,8 @@ class CinemaController {
         if($filtre != "defaut")
         {
             $requete .= "ORDER BY filtre DESC";
-            $var_exec["filtre"] = "$filtre";
 
-            $requete_recovery = $this->prepAndExecAndRecovery($requete, $var_exec);
+            $requete_recovery = $this->execAndRecovery($requete);
         }
         else
         {
@@ -174,7 +188,7 @@ class CinemaController {
     // Liste genre d'un Film selon son id
     public function genreFilm($id){
         $requete_prepare = "
-            SELECT genre.genre
+            SELECT genre.genre, genre.id_genre
             FROM gestion_genre, genre
             WHERE gestion_genre.id_genre = genre.id_genre
             AND gestion_genre.id_film = :id";
@@ -305,295 +319,6 @@ class CinemaController {
         return $requete_recovery;
     }
 
-
-
-
-
-
-
-
-
-
-
-    // Fonction qui s'occupue de la modification et de la suppression d'un FILM
-    public function ModifFilm($id){
-        // Requetes de modification des données d'un film lors de l'envoi du formulaire à l'appui du bouton VALIDER
-        if(isset($_POST['submit']))
-        {
-            $id_realisateur = filter_input(INPUT_POST, "personne", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-            $titre          = filter_input(INPUT_POST, "titre", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-            $date_sortie    = filter_input(INPUT_POST, "date_sortie", FILTER_DEFAULT);
-            $duree          = filter_input(INPUT_POST, "duree", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-            $synopsis       = filter_input(INPUT_POST, "synopsis", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-            $affiche_film   = filter_input(INPUT_POST, "affiche_film", FILTER_SANITIZE_URL);
-
-
-            if(filter_var($id_realisateur, FILTER_VALIDATE_INT) && filter_var($duree, FILTER_VALIDATE_INT)){
-                // ----------- Modification du realisateur du film -----------------
-                $requete_prepare_realisateur = "
-                            UPDATE film, realisateur
-                            SET film.id_realisateur = realisateur.id_realisateur
-                            WHERE realisateur.id_personne = :id_realisateur
-                            AND film.id_film = :id
-                            ";
-                $var_exec_realis = array("id_realisateur" => "$id_realisateur",
-                            "id" => "$id");
-                
-                $this->prepAndExecAndRecovery($requete_prepare_realisateur, $var_exec_realis);
-
-                // ------------ Modification des propriétés du film ----------------
-                $requete_prepare = "
-                            UPDATE film
-                            SET titre = :titre, 
-                            date_sortie = :date_sortie,
-                            duree = :duree,
-                            synopsis = :synopsis,
-                            affiche_film = :affiche_film
-                            WHERE film.id_film = :id
-                            ";
-                $var_exec = array("titre" => "$titre",
-                            "date_sortie" => "$date_sortie",
-                            "duree" => "$duree",
-                            "synopsis" => "$synopsis",
-                            "affiche_film" => "$affiche_film",
-                            "id" => "$id");
-                $this->prepAndExecAndRecovery($requete_prepare, $var_exec);
-
-                // Modification si et seulement si les genres du film ont été modifiés
-                if(isset($_POST['check_list']))
-                {
-                    // --------- Suppression des anciens genres du film ------------
-                    $requete_prepare_delete_genre = "
-                        DELETE FROM gestion_genre
-                        WHERE gestion_genre.id_film = :id
-                    ";
-                    $var_exec_del_genre["id"] = "$id";
-                    $this->prepAndExecAndRecovery($requete_prepare_delete_genre, $var_exec_del_genre);
-
-                    // ----------- Ajout des nouveaux genres du film ----------------
-                    foreach($_POST['check_list'] as $keys) {
-                        $requete_prepare_Genre = "
-                            INSERT INTO gestion_genre (id_film, id_genre)
-                            VALUES ((SELECT id_film FROM film WHERE film.titre = :titre), :id_genre)
-                            ";
-                        $var_exec_Genre = array("titre" => "$titre",
-                                                "id_genre" => "$keys");
-                        
-                        $this->prepAndExecAndRecovery($requete_prepare_Genre, $var_exec_Genre);
-                    }
-                }
-                $alert_message  = "SUCCESS : Le film a bien été modifié";
-                $alert_type     = "success";
-            }
-            else
-            {
-                $alert_message  = "WARNING : Veuillez vérifier les données entrées du film et réessayer";
-                $alert_type     = "warning";
-            }
-            // Redirection vers la Fiche de ce Film après modification
-            $this->viewFicheFilm($id);
-        }
-
-        // Requetes de suppression des données d'un film lors de l'appui sur le bouton SUPPRIMER
-        if(isset($_POST['delete']))
-        {
-            // ------------- Suppression des genres du film ------------------------
-            $requete_prepare_delete_genre = "
-                                        DELETE FROM gestion_genre
-                                        WHERE gestion_genre.id_film = :id
-                                        ";
-            $var_exec_del_genre["id"] = "$id";
-            $this->prepAndExecAndRecovery($requete_prepare_delete_genre, $var_exec_del_genre);
-
-            // ------------------ Suppression du film ------------------------------
-            $requete_prepare_delete_film = "
-                                        DELETE FROM film
-                                        WHERE film.id_film = :id
-                                        ";
-            $var_exec_del_film["id"] = "$id";
-            $this->prepAndExecAndRecovery($requete_prepare_delete_film, $var_exec_del_film);
-
-            $alert_message  = "SUCCESS : Le film a bien été supprimé";
-            $alert_type     = "success";
-
-            // Redirection vers la page HOME après suppression du FILM
-            header("Location:index.php?action=home_view");
-        }
-    }
-
-    // Fonction qui s'occupue de la modification et de la suppression d'une Personne
-    public function ModifPersonne($id){
-        // Requetes de modification des données d'une personne lors de l'envoi du formulaire à l'appui du bouton VALIDER
-        if(isset($_POST['submit']))
-        {
-            $nom            = filter_input(INPUT_POST, "nom", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-            $prenom         = filter_input(INPUT_POST, "prenom", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-            $sexe           = filter_input(INPUT_POST, "sexe", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-            $date_naissance = filter_input(INPUT_POST, "date_naissance", FILTER_DEFAULT);
-            $profil         = filter_input(INPUT_POST, "profil", FILTER_SANITIZE_URL);
-            
-            // ------------ Modification des propriétés de la personne -------------
-            $requete_prepare = "
-                        UPDATE personne
-                        SET nom = :nom, 
-                        prenom = :prenom,
-                        sexe = :sexe,
-                        date_naissance = :date_naissance,
-                        profil = :profil
-                        WHERE personne.id_personne = :id
-                        ";
-            $var_exec = array("nom" => "$nom",
-                            "prenom" => "$prenom",
-                            "sexe" => "$sexe",
-                            "date_naissance" => "$date_naissance",
-                            "profil" => "$profil",
-                            "id" => "$id");
-            $this->prepAndExecAndRecovery($requete_prepare, $var_exec);
-
-            $alert_message  = "SUCCESS : La modifcation du profil s'est bien déroulé";
-            $type_message   = "success";
-            $this->viewFichePersonne($id);
-        }
-
-        // Requetes de suppression des données d'une personne lors de l'appui sur le bouton SUPPRIMER
-        if(isset($_POST['delete']))
-        {
-            // ------------------ Suppression de la personne -----------------------
-            $requete_prepare_delete_personne = "
-                                        DELETE FROM personne
-                                        WHERE personne.id_personne = :id
-                                        ";
-            $var_exec_del_personne["id"] = "$id";
-            $this->prepAndExecAndRecovery($requete_prepare_delete_personne, $var_exec_del_personne);
-
-            $alert_message  = "SUCCESS : Le profil a bien été supprimé";
-            $type_message   = "success";
-
-            // Redirection vers la page HOME après suppression de la personne
-            header("Location:index.php?action=home_view");
-        }
-    }
-
-
-
-
-    // Fonction qui s'occupe de l'ajout d'un film
-    public function addFilm(){
-        if(isset($_POST['submit']))
-        {
-            $realisateur    = filter_input(INPUT_POST, "realisateur", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-            $titre          = filter_input(INPUT_POST, "titre", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-            $date_sortie    = filter_input(INPUT_POST, "date_sortie", FILTER_DEFAULT);
-            $duree          = filter_input(INPUT_POST, "duree", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-            $synopsis       = filter_input(INPUT_POST, "synopsis", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-            $affiche_film   = filter_input(INPUT_POST, "affiche_film", FILTER_SANITIZE_URL);
-
-            var_dump($affiche_film); die;
-            // requete select avec le titre 
-            $requete_prepare_verif = "
-                SELECT titre
-                FROM film
-                WHERE film.titre = :titre";
-            
-            $var_exec_verif["titre"] = "$titre";
-            $requete_verif = $this->prepAndExecAndRecovery($requete_prepare_verif, $var_exec_verif);
-
-            // Boucle vérifiant si le film n'existe pas déjà
-            if($requete_verif->fetch())
-            {
-                $alert_message  = "ERROR : Le film existe déjà";
-                $alert_type     = "error";
-                header("Location:index.php?action=add_view");
-            }
-            else
-            {
-                // Verification des filtres du réalisateur et de la durée
-                if(filter_var($realisateur, FILTER_VALIDATE_INT) && filter_var($duree, FILTER_VALIDATE_INT)){
-        
-                    $requete_prepare = "
-                        INSERT INTO film (id_realisateur, titre, date_sortie, duree, synopsis, affiche_film)
-                        VALUES (:id_realisateur, :titre, :date_sortie, :duree, :synopsis, :affiche_film)";
-                    
-                    $var_exec = array("id_realisateur" => "$realisateur",
-                            "titre" => "$titre",
-                            "date_sortie" => "$date_sortie",
-                            "duree" => "$duree",
-                            "synopsis" => "$synopsis",
-                            "affiche_film" => "$affiche_film");
-                    
-                    $this->prepAndExecAndRecovery($requete_prepare, $var_exec);
-                                
-                    foreach($_POST['check_list'] as $keys) {
-                        $requete_prepare_Genre = "
-                            INSERT INTO gestion_genre (id_film, id_genre)
-                            VALUES ((SELECT id_film FROM film WHERE film.titre = :titre), :id_genre)
-                            ";
-                        $var_exec_Genre = array("titre" => "$titre",
-                                                "id_genre" => "$keys");
-                        
-                        $this->prepAndExecAndRecovery($requete_prepare_Genre, $var_exec_Genre);
-                    }
-                    $alert_message  = "SUCCESS : Le film a bien été ajouté";
-                    $alert_type     = "success";
-                }
-                header("Location:index.php?action=add_view");
-            }
-        }
-    }
-
-    // Fonction qui s'occupe de l'ajout d'une personne
-    public function addPersonne(){
-        if(isset($_POST['submit']))
-        {
-            $nom            = filter_input(INPUT_POST, "nom", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-            $prenom         = filter_input(INPUT_POST, "prenom", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-            $sexe           = filter_input(INPUT_POST, "sexe", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-            $date_naissance = filter_input(INPUT_POST, "date_naissance", FILTER_DEFAULT);
-            $profil         = filter_input(INPUT_POST, "profil", FILTER_SANITIZE_URL);
-
-            var_dump($date_naissance);
-            // Connexion à la base de données voulu
-            $pdo = Connect::seConnecter();
-            // Prepare la requête
-            $requete_prepare = "
-                INSERT INTO personne (nom, prenom, sexe, date_naissance, profil)
-                VALUES (:nom, :prenom, :sexe, :date_naissance, :profil)
-                ";
-            $requete_recovery = $pdo->prepare("$requete_prepare");
-
-            // Execute avec les variables présents dans la requête
-            $var_exec = array("nom" => "$nom",
-                            "prenom" => "$prenom",
-                            "sexe" => "$sexe",
-                            "date_naissance" => "$date_naissance",
-                            "profil" => "$profil");
-            $requete_recovery->execute($var_exec);
-
-            // Récupération de la dernière id ajouté dans la table personne
-            $id_personne = $pdo->lastInsertId();
-
-            foreach($_POST['check_work'] as $keys) {
-                if($keys == "check_realisateur")
-                {
-                    $requete_prepare_work = "
-                        INSERT INTO realisateur (id_personne)
-                        VALUES (:id_personne)";
-                }
-                else if($keys == "check_acteur")
-                {
-                    $requete_prepare_work = "
-                        INSERT INTO acteur (id_personne)
-                        VALUES (:id_personne)";
-                }
-                $var_exec_work["id_personne"] = "$id_personne";
-                $this->prepAndExecAndRecovery($requete_prepare_work, $var_exec_work);
-            }
-            $alert_message  = "SUCCES : Le profil a bien été ajouté";
-            $alert_type     = "success";
-            header("Location:index.php?action=add_view");
-        }
-    }
-
 /* --------------------------------------------------------------------------------------------- */
 
 
@@ -614,7 +339,6 @@ class CinemaController {
         require "view/viewHome.php";
     }
 
-
     // Fonction qui retourne toutes les réponses de requête utiles pour la vue FILM
     public function viewFilm($genre) {
         // Liste des films selon la base de données SQL
@@ -632,15 +356,14 @@ class CinemaController {
         require "view/viewFilm.php";
     }
 
-
     // Fonction qui retourne toutes les réponses de requête utiles pour la vue REALISATEUR
     public function viewRealisateur() {
         // Liste des réalisateurs selon la base de données SQL
         $requete_listRealisateurs           = $this->listRealisateurs("defaut");
         // Liste des réalisateurs selon le nombre de film
-        $requete_listRealisateursPerNbr     = $this->listRealisateurs("COUNT(id_film)");
+        $requete_listRealisateursPerNbr     = $this->listRealisateurs("nombre");
         // Liste des réalisateurs selon la note
-        $requete_listRealisateursPerNote    = $this->listRealisateurs("AVG(note)");
+        $requete_listRealisateursPerNote    = $this->listRealisateurs("note");
         require "view/viewRealisateur.php";
     }
 
@@ -655,16 +378,19 @@ class CinemaController {
         require "view/viewActeur.php";
     }
 
+    // Fonction qui s'occupe de la vue d'ajout
     public function viewAdd(){
         $alert_message  = "Il s'agit d'un test";
         $alert_type     = "warning";
         require "view/viewAdd.php";
     }
 
+    // Fonction qui s'occupe de la vue d'ajout Personne
     public function viewAddPersonne(){
         require "view/viewAddPersonne.php";
     }
 
+    // Fonction qui s'occupe de la vue d'ajout Film et retourne toutes les réponses de requête utiles pour son affichage
     public function viewAddFilm(){
         // Liste des realisateurs contenu dans la base de données pour le choix du réalisateur lors de la modification
         $requete_listRealisateurs       = $this->listRealisateurs("defaut");
@@ -672,7 +398,6 @@ class CinemaController {
         $requete_listGenre              = $this->listGenre();
         require "view/viewAddFilm.php";
     }
-
 
     // Fonction qui retourne toutes les réponses de requête utiles pour l'affichage de la Fiche d'un Film
     public function viewFicheFilm($id) {
@@ -684,7 +409,6 @@ class CinemaController {
         $requete_listActeursThisFilm    = $this->listActeursAndRoleperFilm($id);
         require "view/ficheFilm.php";
     }
-
 
     // Fonction qui retourne toutes les réponses de requête utiles pour l'affichage de la Fiche d'une Personne
     public function viewFichePersonne($id) {
@@ -701,7 +425,6 @@ class CinemaController {
         require "view/fichePersonne.php";
     }
     
-
     // Fonction qui retourne toutes les réponses de requête utiles pour l'affichage de la Modification d'un film
     public function viewModifFilm($id){
         // Liste des realisateurs contenu dans la base de données pour le choix du réalisateur lors de la modification
@@ -710,9 +433,10 @@ class CinemaController {
         $requete_ficheFilm              = $this->ficheFilm($id);
         // Liste des genres présents dans la base de données
         $requete_listGenre              = $this->listGenre();
+        // Liste des genres selon l'id du film
+        $requete_genre_film             = $this->genreFilm($id);
         require "view/filmModif.php";
     }
-
 
     // Fonction qui retourne toutes les réponses de requête utiles pour l'affichage de la Modification d'une Personne
     public function viewModifPersonne($id){
@@ -721,4 +445,5 @@ class CinemaController {
         require "view/personneModif.php";
     }
 
+/* --------------------------------------------------------------------------------------------- */
 }

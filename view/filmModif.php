@@ -1,7 +1,10 @@
 <?php 
 session_start();
 ob_start(); 
-$requete = $requete_ficheFilm->fetch();?>
+$requete = $requete_ficheFilm->fetch();
+foreach($requete_genre_film->fetchAll() as $genre) {
+    $requeteGenreFilm[] = $genre["id_genre"];
+}?>
 
 
 <section class="formulaire_modification">
@@ -61,10 +64,12 @@ $requete = $requete_ficheFilm->fetch();?>
             <fieldset>
                 <legend>Choisis un ou plusieurs genres du Film</legend>
                 <ul>
-                    <?php foreach($requete_listGenre->fetchAll() as $keys) { ?>
+                    <?php foreach($requete_listGenre->fetchAll() as $genre) { 
+                        $checked = (in_array($genre["id_genre"], $requeteGenreFilm)) ? "checked" : "";
+                        ?>
                         <li>
-                            <input type="checkbox" id="<?=$keys["id_genre"]?>" name="check_list[]" value="<?=$keys["id_genre"]?>">
-                            <label for="<?=$keys["id_genre"]?>"><?=$keys["genre"]?></label>
+                            <input type="checkbox" id="<?=$genre["id_genre"]?>" name="check_list[]" value="<?=$genre["id_genre"]?>" <?= $checked ?>>
+                            <label for="<?=$genre["id_genre"]?>"><?=$genre["genre"]?></label>
                         </li>
                     <?php }?>
                 </ul>

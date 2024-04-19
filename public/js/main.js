@@ -23,8 +23,22 @@ alert_btn_click = document.querySelector(".close_btn_alert")
 alert_container_click = document.querySelector(".container_alert")
 
 alert_btn_click.addEventListener("click", function(){
-    console.log("test")
     alert_container_click.classList.remove("show");
     alert_container_click.classList.add("hide");
 });
+
+
+$(".message_alert").each(function(){
+    
+    if ($(this).text().length > 1){
+        alert_container_click.classList.remove("none");
+        alert_container_click.classList.add("show");
+        setTimeout(function() {
+            alert_container_click.classList.remove("show");
+            alert_container_click.classList.add("hide");
+        }, 3000)
+    }
+})
+
+
 

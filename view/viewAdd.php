@@ -13,7 +13,6 @@ ob_start();?>
 
 $titre = "";
 // $titre_secondaire = "Liste des films";
-$alert_message  = $alert_message;
-$alert_type     = $alert_type;
+
 $contenu = ob_get_clean();
 require_once "template.php";

@@ -12,18 +12,38 @@
     <header class="header">
         <nav class="nav_container">
             <div class="nav_home">
-                <a href="index.php?action=home_view">HOME</a>
+                <a href="index.php?action=home_view">
+                    <span class="nav_top">HOME</span>
+                    <div class="nav_bottom">
+                        <i class="ri-home-3-fill"></i>
+                    </div>
+                </a>
             </div>
             <div class="nav_menu">
                 <ul class="nav_menu_list">
                     <li class="nav_item">
-                        <a href="index.php?action=film_view&genre=Action">FILM</a>
+                        <a href="index.php?action=film_view&genre=Action">
+                            <span class="nav_top">FILM</span>
+                            <div class="nav_bottom">
+                                <i class="ri-movie-2-fill"></i>
+                            </div>
+                        </a>
                     </li>
                     <li class="nav_item">
-                        <a href="index.php?action=realisateur_view">REALISATEUR</a>
+                        <a href="index.php?action=realisateur_view">
+                            <span class="nav_top">REALISATEUR</span>
+                            <div class="nav_bottom">
+                                <i class="ri-movie-line"></i>
+                            </div>
+                        </a>
                     </li>
                     <li class="nav_item">
-                        <a href="index.php?action=acteur_view">ACTEUR</a>
+                        <a href="index.php?action=acteur_view">
+                            <span class="nav_top">ACTEUR</span>
+                            <div class="nav_bottom">
+                                <i class="ri-movie-line"></i>
+                            </div>
+                        </a>
                     </li>
                 </ul>
             </div>
@@ -40,18 +60,22 @@
         <?= $contenu ?>
 
 
-
+        <?php if(isset($_SESSION["alert_message"])) { ?>
         <div class="container_alert <?php 
-            if($alert_type == "success"){echo "alert_validate";}
-            elseif($alert_type == "warning"){echo "alert_warning";}
-            elseif($alert_type == "error"){echo "alert_error";}
-            else{echo "alert_validate";}
-            ?> show">
+            if($_SESSION["alert_type"] == "success"){echo "alert_validate";}
+            elseif($_SESSION["alert_type"] == "warning"){echo "alert_warning";}
+            elseif($_SESSION["alert_type"] == "error"){echo "alert_error";}
+            else{echo "";}
+            ?> none">
             <span class="logo_alert">
                 <i class="ri-error-warning-fill"></i>
             </span>
             <span class="message_alert">
-                <?php echo $alert_message; ?>
+                <?php
+                
+                    echo $_SESSION["alert_message"];
+                    unset($_SESSION["alert_message"]);
+                ?>
             </span>
             <div class="close_btn_alert">
                 <span class="close_btn">
@@ -59,6 +83,7 @@
                 </span>
             </div>
         </div>
+        <?php  } ?>
 
     </main>
 
@@ -82,5 +107,6 @@
     </footer>
     
 </body>
-    <script src="public/js/main.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+<script src="public/js/main.js"></script>
 </html>
