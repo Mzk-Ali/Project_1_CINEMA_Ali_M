@@ -10,6 +10,7 @@ _Il s'agit du 2eme projet en PHP chez ELAN Formation_
 
 Le projet CINEMA est un site WEB responsive qui liste les films avec leur réalisateur et leurs acteurs, avec la possiblité d'accéder aux fiches infos, de pouvoir les modifier ou d'en ajouter.
 
+
 ![image](https://github.com/Mzk-Ali/Cinema_project_AM/assets/161448982/9f3c6f62-fc2f-464b-bd9b-e93fa139867d)
 
 
