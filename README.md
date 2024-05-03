@@ -16,7 +16,6 @@ Le projet CINEMA est un site WEB responsive qui liste les films avec leur réali
 
 ## Pour commencer
 
-Entrez ici les instructions pour bien débuter avec votre projet...
 
 ### Pré-requis
 
