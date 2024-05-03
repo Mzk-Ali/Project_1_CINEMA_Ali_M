@@ -43,6 +43,9 @@ Pour lancer votre projet :
 
 ## Fabriqué avec
 
+* [Looping](https://www.looping-mcd.fr/) - Modelisation Conceptuelle de Données
+* [Figma](https://www.figma.com/fr-fr/) - Outil de design à interface collaborative
+
 * [RemixIcon](https://remixicon.com/) - Open-Source Icon Library (front-end)
 * [VS Code](https://code.visualstudio.com/) - Editeur de textes
 * [Laragon](https://laragon.org/index.html) - Environnement de développement
