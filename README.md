@@ -40,6 +40,21 @@ Votre base de donnée est mise en place
 Pour lancer votre projet :
 - Sur votre navigateur web, aller sur l'url suivant : http://localhost/cinema_project_AM/index.php?action=home_view
 
+## Construction du projet
+
+### Modélisation Conceptuelle de Donnée
+
+<img width="500" alt="image" src="https://github.com/Mzk-Ali/Project_1_CINEMA_Ali_M/assets/161448982/e2c039aa-df2a-4814-b1e7-d836cad8af81">
+<img width="500" alt="image" src="https://github.com/Mzk-Ali/Project_1_CINEMA_Ali_M/assets/161448982/8a479f13-2979-4e9e-b664-4bc300080b9f">
+
+
+### Design : MockUp
+
+Utilisation de figma pour la création de mockup.
+
+![image](https://github.com/Mzk-Ali/Project_1_CINEMA_Ali_M/assets/161448982/a7c8898a-2e17-437e-aee2-8a8799e3c337)
+
+
 ## Fabriqué avec
 
 * [Looping](https://www.looping-mcd.fr/) - Modelisation Conceptuelle de Données
