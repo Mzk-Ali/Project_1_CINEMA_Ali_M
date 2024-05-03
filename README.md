@@ -90,7 +90,7 @@ Pour le Design Pattern du projet, nous avons utilisé l'architecture MVC (Modèl
 **Dernière version stable**
 
 ## Auteurs
-Listez le auteur du projet ici !
+
 * **Ali MARZAK** _alias_ [@Ali-Mzk](https://github.com/Mzk-Ali)
 
 ## License
