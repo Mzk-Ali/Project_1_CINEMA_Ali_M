@@ -12,7 +12,7 @@ Le projet CINEMA est un site WEB responsive qui liste les films avec leur réali
 
 
 <img width="70%" alt="image" src="https://github.com/Mzk-Ali/Cinema_project_AM/assets/161448982/9f3c6f62-fc2f-464b-bd9b-e93fa139867d">
-<img width="20%" alt="image" src="https://github.com/Mzk-Ali/Project_1_CINEMA_Ali_M/assets/161448982/47a7f3c4-1994-4f26-a4ce-effafc1d124e">
+<img width="25%" alt="image" src="https://github.com/Mzk-Ali/Project_1_CINEMA_Ali_M/assets/161448982/47a7f3c4-1994-4f26-a4ce-effafc1d124e">
 
 
 ## Pour commencer
@@ -45,8 +45,8 @@ Pour lancer votre projet :
 
 ### Modélisation Conceptuelle de Donnée
 
-<img width="500" alt="image" src="https://github.com/Mzk-Ali/Project_1_CINEMA_Ali_M/assets/161448982/e2c039aa-df2a-4814-b1e7-d836cad8af81">
-<img width="500" alt="image" src="https://github.com/Mzk-Ali/Project_1_CINEMA_Ali_M/assets/161448982/8a479f13-2979-4e9e-b664-4bc300080b9f">
+<img width="45%" alt="image" src="https://github.com/Mzk-Ali/Project_1_CINEMA_Ali_M/assets/161448982/e2c039aa-df2a-4814-b1e7-d836cad8af81">
+<img width="45%" alt="image" src="https://github.com/Mzk-Ali/Project_1_CINEMA_Ali_M/assets/161448982/8a479f13-2979-4e9e-b664-4bc300080b9f">
 
 
 ### Design : MockUp
