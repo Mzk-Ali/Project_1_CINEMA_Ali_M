@@ -19,26 +19,26 @@ Entrez ici les instructions pour bien débuter avec votre projet...
 
 ### Pré-requis
 
-Ce qu'il est requis pour commencer avec votre projet...
+Pour commencer le projet, il est requis d'avoir
 
-- Programme 1
-- Programme 2
-- etc...
+- Editeur de code (VS Code)
+- Environnement de développement (Laragon)
 
 ### Installation
 
-Les étapes pour installer votre programme....
+Tout d'abord, télécharger le projet dans le dossier C:\laragon\www
 
-Dites ce qu'il faut faire...
+Ensuite, il faut mettre en place la base de données :
+- Vous trouverez le fichier SQL dans le dossier Model
+- Ouvrir le logiciel laragon, cliquer sur Démarer puis sur Base de données.
+- Charger le fichier SQL puis l'éxécuter
 
-_exemple_: Executez la commande ``telnet mapscii.me`` pour commencer ensuite [...]
-
-
-Ensuite vous pouvez montrer ce que vous obtenez au final...
+Votre base de donnée est mise en place
 
 ## Démarrage
 
-Dites comment faire pour lancer votre projet
+Pour lancer votre projet :
+- Sur votre navigateur web, aller sur l'url suivant : http://localhost/cinema_project_AM/index.php?action=home_view
 
 ## Fabriqué avec
 
@@ -48,12 +48,8 @@ Dites comment faire pour lancer votre projet
 
 
 ## Versions
-Listez les versions ici 
-_exemple :_
-**Dernière version stable :** 5.0
-**Dernière version :** 5.1
-Liste des versions : [Cliquer pour afficher](https://github.com/your/project-name/tags)
-_(pour le lien mettez simplement l'URL de votre projets suivi de ``/tags``)_
+
+**Dernière version stable**
 
 ## Auteurs
 Listez le auteur du projet ici !
