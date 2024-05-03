@@ -11,7 +11,8 @@ _Il s'agit du 2eme projet en PHP chez ELAN Formation_
 Le projet CINEMA est un site WEB responsive qui liste les films avec leur réalisateur et leurs acteurs, avec la possiblité d'accéder aux fiches infos, de pouvoir les modifier ou d'en ajouter.
 
 
-![image](https://github.com/Mzk-Ali/Cinema_project_AM/assets/161448982/9f3c6f62-fc2f-464b-bd9b-e93fa139867d)
+<img width="750" alt="image" src="https://github.com/Mzk-Ali/Cinema_project_AM/assets/161448982/9f3c6f62-fc2f-464b-bd9b-e93fa139867d">
+<img width="250" alt="image" src="https://github.com/Mzk-Ali/Project_1_CINEMA_Ali_M/assets/161448982/47a7f3c4-1994-4f26-a4ce-effafc1d124e">
 
 
 ## Pour commencer
@@ -53,6 +54,25 @@ Pour lancer votre projet :
 Utilisation de figma pour la création de mockup.
 
 ![image](https://github.com/Mzk-Ali/Project_1_CINEMA_Ali_M/assets/161448982/a7c8898a-2e17-437e-aee2-8a8799e3c337)
+
+### Arborescence du projet
+
+Pour le Design Pattern du projet, nous avons utilisé l'architecture MVC (Modèle-Vue-Controller) permettant l'agencement du code.
+
+- Controller
+  - CinemaController.php
+  - AddCinemaController.php
+  - ModifCinemaController.php
+- Model
+  - Connect.php
+- Public
+  - CSS
+    - style.css
+  - JS
+    - main.js
+- View
+  - _Ensemble des vues du site_
+- index.php
 
 
 ## Fabriqué avec
