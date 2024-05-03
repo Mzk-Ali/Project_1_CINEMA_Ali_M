@@ -82,7 +82,7 @@ class CinemaController {
     }
 
     // Liste Realisateur
-    public function listRealisateurs($filtre) {
+    public function listRealisateursWithFiltre($filtre) {
         $requete = "SELECT ";
         if($filtre != "defaut"){
             if($filtre == "nombre"){
@@ -102,7 +102,7 @@ class CinemaController {
             ON film.id_realisateur = realisateur.id_realisateur
             INNER JOIN personne
             ON realisateur.id_personne = personne.id_personne
-            GROUP BY film.id_realisateur
+            GROUP BY realisateur.id_realisateur
             ";
         if($filtre != "defaut")
         {
@@ -114,6 +114,18 @@ class CinemaController {
         {
             $requete_recovery = $this->execAndRecovery($requete);
         }
+        return $requete_recovery;
+    }
+
+
+    // Liste Realisateur
+    public function listRealisateurs() {
+        $requete = "
+            SELECT CONCAT(nom, ' ',prenom) AS personne, realisateur.id_personne AS id, realisateur.id_realisateur AS id_realisateur, profil
+            FROM personne, realisateur
+            WHERE realisateur.id_personne = personne.id_personne
+            ";
+        $requete_recovery = $this->execAndRecovery($requete);
         return $requete_recovery;
     }
 
@@ -333,7 +345,7 @@ class CinemaController {
         // Liste des films 
         $requete_listFilms                  = $this->listFilms("defaut", "defaut");
         // Liste des Réalisateurs
-        $requete_listRealisateurs           = $this->listRealisateurs("defaut");
+        $requete_listRealisateurs           = $this->listRealisateursWithFiltre("defaut");
         // Liste des Acteurs
         $requete_listActeurs                = $this->listActeurs();
         require "view/viewHome.php";
@@ -359,11 +371,11 @@ class CinemaController {
     // Fonction qui retourne toutes les réponses de requête utiles pour la vue REALISATEUR
     public function viewRealisateur() {
         // Liste des réalisateurs selon la base de données SQL
-        $requete_listRealisateurs           = $this->listRealisateurs("defaut");
+        $requete_listRealisateurs           = $this->listRealisateursWithFiltre("defaut");
         // Liste des réalisateurs selon le nombre de film
-        $requete_listRealisateursPerNbr     = $this->listRealisateurs("nombre");
+        $requete_listRealisateursPerNbr     = $this->listRealisateursWithFiltre("nombre");
         // Liste des réalisateurs selon la note
-        $requete_listRealisateursPerNote    = $this->listRealisateurs("note");
+        $requete_listRealisateursPerNote    = $this->listRealisateursWithFiltre("note");
         require "view/viewRealisateur.php";
     }
 
@@ -393,7 +405,7 @@ class CinemaController {
     // Fonction qui s'occupe de la vue d'ajout Film et retourne toutes les réponses de requête utiles pour son affichage
     public function viewAddFilm(){
         // Liste des realisateurs contenu dans la base de données pour le choix du réalisateur lors de la modification
-        $requete_listRealisateurs       = $this->listRealisateurs("defaut");
+        $requete_listRealisateurs       = $this->listRealisateurs();
         // Liste des genres présents dans la base de données
         $requete_listGenre              = $this->listGenre();
         require "view/viewAddFilm.php";
@@ -428,7 +440,7 @@ class CinemaController {
     // Fonction qui retourne toutes les réponses de requête utiles pour l'affichage de la Modification d'un film
     public function viewModifFilm($id){
         // Liste des realisateurs contenu dans la base de données pour le choix du réalisateur lors de la modification
-        $requete_listRealisateurs       = $this->listRealisateurs("defaut");
+        $requete_listRealisateurs       = $this->listRealisateurs();
         // Ensemble des données d'un film selon l'id
         $requete_ficheFilm              = $this->ficheFilm($id);
         // Liste des genres présents dans la base de données

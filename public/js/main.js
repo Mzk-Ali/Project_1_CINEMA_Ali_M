@@ -18,6 +18,20 @@ for (let i = 0; i < right_click.length; i++)
 
 
 
+// dark_mode_click = document.querySelector("#dark_mode")
+
+
+// dark_mode_click.addEventListener("click", function(){
+//     console.log("test")
+//     dark_mode_click.classList.toggle("mode_moon");
+
+//     test = document.getElementsByClassName("circle_mode").style.left
+//     console.log(test)
+
+// });
+
+
+
 
 alert_btn_click = document.querySelector(".close_btn_alert")
 alert_container_click = document.querySelector(".container_alert")
@@ -39,6 +53,8 @@ $(".message_alert").each(function(){
         }, 3000)
     }
 })
+
+
 
 
 
