@@ -29,7 +29,6 @@ class AddCinemaController {
 
     // Fonction qui s'occupe de l'ajout d'un film
     public function addFilm(){
-        session_start();
         if(isset($_POST['submit']))
         {
             $realisateur    = filter_input(INPUT_POST, "realisateur", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
@@ -94,6 +93,11 @@ class AddCinemaController {
                     }
                     $_SESSION["alert_message"]  = "SUCCESS : Le film a bien été ajouté";
                     $_SESSION["alert_type"]     = "success";
+                }
+                else
+                {
+                    $_SESSION["alert_message"]  = "Warning : Veuillez resaisir le film";
+                    $_SESSION["alert_type"]     = "warning";
                 }
                 header("Location:index.php?action=add_view");
             }

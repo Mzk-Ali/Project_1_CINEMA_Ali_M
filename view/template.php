@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.2.0/remixicon.css" integrity="sha512-OQDNdI5rpnZ0BRhhJc+btbbtnxaj+LdQFeh0V9/igiEPDiWE2fG+ZsXl0JEH+bjXKPJ3zcXqNyP4/F/NegVdZg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="public/css/style.css">
     <title><?= $titre ?></title>
 </head>
@@ -41,7 +42,7 @@
                         <a href="index.php?action=acteur_view">
                             <span class="nav_top">ACTEUR</span>
                             <div class="nav_bottom">
-                                <i class="ri-movie-line"></i>
+                                <i class="fa-solid fa-masks-theater"></i>
                             </div>
                         </a>
                     </li>
@@ -56,8 +57,16 @@
 
     </header>
     <main>
+<!-- 
+        <div id="dark_mode" class="mode_sun">
+            <div class="img_sun"><i class="ri-sun-fill"></i></div>
+            <div class="img_moon"><i class="ri-contrast-2-fill"></i></div>
+            <div class="circle_mode"></div>
+        </div> -->
+
         <h1><?= $titre ?></h1>
         <?= $contenu ?>
+
 
 
         <?php if(isset($_SESSION["alert_message"])) { ?>
