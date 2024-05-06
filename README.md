@@ -74,6 +74,11 @@ Pour le Design Pattern du projet, nous avons utilisé l'architecture MVC (Modèl
   - _Ensemble des vues du site_
 - index.php
 
+### Gestion des failles
+
+- Injection SQL
+- Faille de sécurité PHP XSS
+
 
 ## Fabriqué avec
 
